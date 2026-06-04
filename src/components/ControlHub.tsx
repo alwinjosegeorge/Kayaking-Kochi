@@ -28,7 +28,7 @@ interface ControlHubProps {
   bookings: Booking[];
   blockedDates: string[];
   closedSlots: ClosedSlot[];
-  onAddBooking: (bookingData: Omit<Booking, 'id' | 'createdAt' | 'securityToken'>) => Booking;
+  onAddBooking: (bookingData: Omit<Booking, 'id' | 'createdAt' | 'securityToken'>) => Booking | Promise<Booking>;
   onUpdateBooking: (updatedBooking: Booking) => void;
   onBlockDate: (date: string) => void;
   onUnblockDate: (date: string) => void;
@@ -606,7 +606,7 @@ export default function ControlHub({
   };
 
   return (
-    <div className="flex min-h-screen bg-[#F7F2E8] text-[#0D0D0D] font-sans antialiased overflow-x-hidden relative">
+    <div className="flex min-h-screen bg-[#E8E3D8] text-[#0D0D0D] font-sans antialiased overflow-x-hidden relative">
       
       {/* Mobile Sidebar Backdrop Overlay */}
       {mobileMenuOpen && (
@@ -617,7 +617,7 @@ export default function ControlHub({
       )}
       
       {/* ──── SIDEBAR ──── */}
-      <aside className={`w-72 bg-[#0052FF] text-white flex flex-col justify-between flex-shrink-0 z-40 transition-transform duration-300 fixed inset-y-0 left-0 lg:static lg:translate-x-0 ${
+      <aside className={`w-72 bg-premium-dark-grain text-[#E8E3D8] flex flex-col justify-between flex-shrink-0 z-40 transition-transform duration-300 fixed inset-y-0 left-0 lg:static lg:translate-x-0 ${
         mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         
@@ -628,8 +628,8 @@ export default function ControlHub({
               <span className="text-xl font-black tracking-tighter text-white">HC</span>
             </div>
             <div>
-              <h1 className="font-extrabold tracking-tight text-lg leading-tight">Hooked & Cooked</h1>
-              <span className="text-[10px] uppercase tracking-widest text-white/60 font-medium">Control Hub</span>
+              <h1 className="font-extrabold tracking-tight text-lg leading-tight text-white">Hooked & Cooked</h1>
+              <span className="text-[10px] uppercase tracking-widest text-[#73E6D8] font-bold">Control Hub</span>
             </div>
           </div>
 
@@ -656,7 +656,7 @@ export default function ControlHub({
                   }}
                   className={`w-full py-4 px-6 flex items-center gap-4 text-sm font-semibold transition-all duration-300 rounded-l-3xl relative cursor-pointer outline-none group ${
                     isActive 
-                      ? 'bg-[#F7F2E8] text-[#0052FF] shadow-[-10px_0_0_#F7F2E8] sidebar-active-tab' 
+                      ? 'bg-[#E8E3D8] text-[#0D2B35] shadow-[-10px_0_0_#E8E3D8] sidebar-active-tab' 
                       : 'text-white/80 hover:text-white hover:bg-white/5'
                   }`}
                   style={isActive ? {
@@ -670,8 +670,8 @@ export default function ControlHub({
                   {/* Notch styling helpers applied via absolute classes for reliability in Tailwind CSS v4 */}
                   {isActive && (
                     <>
-                      <div className="absolute -top-[20px] right-0 w-5 h-5 bg-[#F7F2E8] rounded-br-2xl pointer-events-none after:content-['']" />
-                      <div className="absolute -bottom-[20px] right-0 w-5 h-5 bg-[#F7F2E8] rounded-tr-2xl pointer-events-none" />
+                      <div className="absolute -top-[20px] right-0 w-5 h-5 bg-[#E8E3D8] rounded-br-2xl pointer-events-none after:content-['']" />
+                      <div className="absolute -bottom-[20px] right-0 w-5 h-5 bg-[#E8E3D8] rounded-tr-2xl pointer-events-none" />
                     </>
                   )}
                 </button>
@@ -719,7 +719,7 @@ export default function ControlHub({
 
           <button 
             onClick={() => onNavigate('/')}
-            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white text-[#0052FF] text-xs font-extrabold hover:bg-white/90 shadow-md transition cursor-pointer"
+            className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-white text-[#0D2B35] text-xs font-extrabold hover:bg-white/90 shadow-md transition cursor-pointer"
           >
             <Home className="w-4 h-4" />
             <span>Go to Public Site</span>
@@ -743,7 +743,7 @@ export default function ControlHub({
           <div className="flex items-center gap-3">
             <button 
               onClick={() => setMobileMenuOpen(true)}
-              className="p-2 -ml-1 text-gray-700 hover:text-[#0052FF] lg:hidden cursor-pointer rounded-xl bg-white border border-gray-200/50 shadow-sm outline-none"
+              className="p-2 -ml-1 text-gray-700 hover:text-[#0D2B35] lg:hidden cursor-pointer rounded-xl bg-white border border-gray-200/50 shadow-sm outline-none"
             >
               <Menu className="w-5 h-5" />
             </button>
@@ -759,9 +759,9 @@ export default function ControlHub({
           
           {/* Realtime clock status */}
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex bg-[#BFA054]/10 border border-[#BFA054]/20 rounded-xl px-4 py-2 items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-[#BFA054] animate-pulse" />
-              <span className="text-xs font-bold text-[#BFA054] font-mono">Operations Day: June 4, 2026</span>
+            <div className="hidden sm:flex bg-[#C8A86B]/10 border border-[#C8A86B]/20 rounded-xl px-4 py-2 items-center gap-2">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#C8A86B] animate-pulse" />
+              <span className="text-xs font-bold text-[#C8A86B] font-mono">Operations Day: June 4, 2026</span>
             </div>
             
             <div className="flex items-center gap-3">
@@ -769,7 +769,7 @@ export default function ControlHub({
                 <span className="text-xs font-bold text-gray-800 block">Operator Admin</span>
                 <span className="text-[10px] text-gray-400 block font-medium">Duty Desk</span>
               </div>
-              <div className="w-10 h-10 rounded-full bg-[#0052FF] flex items-center justify-center text-white font-extrabold text-sm border-2 border-white shadow-md">
+              <div className="w-10 h-10 rounded-full bg-[#0D2B35] flex items-center justify-center text-white font-extrabold text-sm border-2 border-white shadow-md">
                 AD
               </div>
             </div>
@@ -810,10 +810,10 @@ export default function ControlHub({
                 {/* Card: Month Revenue */}
                 <div className="bg-white rounded-3xl p-6 border border-gray-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.04)] transition">
                   <div className="flex justify-between items-start">
-                    <div className="bg-[#0052FF]/5 p-3 rounded-2xl text-[#0052FF]">
+                    <div className="bg-[#0D2B35]/5 p-3 rounded-2xl text-[#0D2B35]">
                       <TrendingUp className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-extrabold text-[#0052FF] bg-[#0052FF]/5 px-2 py-1 rounded-full uppercase tracking-wider">
+                    <span className="text-[10px] font-extrabold text-[#0D2B35] bg-[#0D2B35]/5 px-2 py-1 rounded-full uppercase tracking-wider">
                       This Month
                     </span>
                   </div>
@@ -831,10 +831,10 @@ export default function ControlHub({
                 {/* Card: Lifetime Revenue */}
                 <div className="bg-white rounded-3xl p-6 border border-gray-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.02)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.04)] transition">
                   <div className="flex justify-between items-start">
-                    <div className="bg-[#BFA054]/10 p-3 rounded-2xl text-[#BFA054]">
+                    <div className="bg-[#C8A86B]/10 p-3 rounded-2xl text-[#C8A86B]">
                       <Sparkles className="w-6 h-6" />
                     </div>
-                    <span className="text-[10px] font-extrabold text-[#BFA054] bg-[#BFA054]/10 px-2 py-1 rounded-full uppercase tracking-wider">
+                    <span className="text-[10px] font-extrabold text-[#C8A86B] bg-[#C8A86B]/10 px-2 py-1 rounded-full uppercase tracking-wider">
                       Cumulative
                     </span>
                   </div>
@@ -867,7 +867,7 @@ export default function ControlHub({
                         setActiveTab('scanner');
                         handleStartCamera();
                       }}
-                      className="flex items-center gap-2 bg-[#0052FF] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#0052FF]/90 transition"
+                      className="flex items-center gap-2 bg-[#0D2B35] text-white px-4 py-2 rounded-xl text-xs font-bold hover:bg-[#0D2B35]/90 transition"
                     >
                       <Camera className="w-4 h-4" />
                       <span>Start QR Boarding Feed</span>
@@ -882,10 +882,10 @@ export default function ControlHub({
                       const percent = (occupancy / CAPACITY) * 100;
                       
                       return (
-                        <div key={time} className="p-5 rounded-2xl bg-[#F7F2E8]/60 border border-gray-200/40 hover:border-gray-200 transition">
+                        <div key={time} className="p-5 rounded-2xl bg-[#E8E3D8]/60 border border-gray-200/40 hover:border-gray-200 transition">
                           <div className="flex justify-between items-center mb-3">
                             <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-lg bg-[#0052FF]/10 flex items-center justify-center text-[#0052FF]">
+                              <div className="w-8 h-8 rounded-lg bg-[#0D2B35]/10 flex items-center justify-center text-[#0D2B35]">
                                 <Clock className="w-4 h-4" />
                               </div>
                               <div>
@@ -919,7 +919,7 @@ export default function ControlHub({
                                       isFilled 
                                         ? isFull 
                                           ? 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.3)]' 
-                                          : 'bg-[#0052FF]' 
+                                          : 'bg-[#0D2B35]' 
                                         : 'bg-gray-200/80'
                                     }`}
                                     title={isFilled ? `Seat ${idx+1} Occupied` : `Seat ${idx+1} Available`}
@@ -929,7 +929,7 @@ export default function ControlHub({
                             </div>
                             
                             <div className="w-12 text-right">
-                              <span className={`text-xs font-black font-mono ${isFull ? 'text-rose-500' : 'text-[#0052FF]'}`}>
+                              <span className={`text-xs font-black font-mono ${isFull ? 'text-rose-500' : 'text-[#0D2B35]'}`}>
                                 {Math.round(percent)}%
                               </span>
                             </div>
@@ -967,7 +967,7 @@ export default function ControlHub({
                           }}
                         >
                           <div className="flex justify-between items-start mb-1">
-                            <span className="text-[10px] font-mono font-black text-[#0052FF]">
+                            <span className="text-[10px] font-mono font-black text-[#0D2B35]">
                               {b.id}
                             </span>
                             <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
@@ -994,7 +994,7 @@ export default function ControlHub({
                   <div className="border-t border-gray-100 pt-4 text-center">
                     <button 
                       onClick={() => setShowAddBookingModal(true)}
-                      className="w-full text-center text-xs font-bold text-[#0052FF] hover:underline"
+                      className="w-full text-center text-xs font-bold text-[#0D2B35] hover:underline"
                     >
                       + Register Manual Booking Override
                     </button>
@@ -1026,7 +1026,7 @@ export default function ControlHub({
                         setBookingsSearch(e.target.value);
                         setBookingsPage(1);
                       }}
-                      className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-xs w-64 focus:outline-none focus:border-[#0052FF] bg-[#F7F2E8]/40"
+                      className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-xs w-64 focus:outline-none focus:border-[#0D2B35] bg-[#E8E3D8]/40"
                     />
                   </div>
 
@@ -1037,7 +1037,7 @@ export default function ControlHub({
                       setBookingsFilterStatus(e.target.value);
                       setBookingsPage(1);
                     }}
-                    className="border border-gray-200 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#0052FF] bg-white cursor-pointer"
+                    className="border border-gray-200 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#0D2B35] bg-white cursor-pointer"
                   >
                     <option value="All">All Statuses</option>
                     <option value="Confirmed">Confirmed</option>
@@ -1054,7 +1054,7 @@ export default function ControlHub({
                       setBookingsFilterDate(e.target.value);
                       setBookingsPage(1);
                     }}
-                    className="border border-gray-200 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#0052FF] bg-white"
+                    className="border border-gray-200 rounded-xl py-2 px-3 text-xs focus:outline-none focus:border-[#0D2B35] bg-white"
                   />
                   
                   {bookingsFilterDate && (
@@ -1070,7 +1070,7 @@ export default function ControlHub({
 
                 <button 
                   onClick={() => setShowAddBookingModal(true)}
-                  className="flex items-center gap-2 bg-[#0052FF] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#0052FF]/90 transition w-full md:w-auto justify-center cursor-pointer shadow-sm"
+                  className="flex items-center gap-2 bg-[#0D2B35] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#0D2B35]/90 transition w-full md:w-auto justify-center cursor-pointer shadow-sm"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Manual Booking</span>
@@ -1116,7 +1116,7 @@ export default function ControlHub({
                                 }`}
                                 onClick={() => setSelectedBookingId(b.id)}
                               >
-                                <td className="py-4 px-6 font-mono font-black text-[#0052FF]">
+                                <td className="py-4 px-6 font-mono font-black text-[#0D2B35]">
                                   {b.id}
                                 </td>
                                 <td className="py-4 px-6">
@@ -1160,7 +1160,7 @@ export default function ControlHub({
                                       e.stopPropagation();
                                       setSelectedBookingId(b.id);
                                     }}
-                                    className="text-xs font-bold text-[#0052FF] hover:underline"
+                                    className="text-xs font-bold text-[#0D2B35] hover:underline"
                                   >
                                     Inspect
                                   </button>
@@ -1196,7 +1196,7 @@ export default function ControlHub({
                             onClick={() => setBookingsPage(i + 1)}
                             className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer ${
                               bookingsPage === i + 1 
-                                ? 'bg-[#0052FF] text-white' 
+                                ? 'bg-[#0D2B35] text-white' 
                                 : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
                             }`}
                           >
@@ -1233,7 +1233,7 @@ export default function ControlHub({
                     </button>
 
                     <div>
-                      <span className="text-[10px] font-mono font-black text-[#0052FF] block mb-1">
+                      <span className="text-[10px] font-mono font-black text-[#0D2B35] block mb-1">
                         {selectedBooking.id}
                       </span>
                       <h4 className="text-lg font-black text-gray-900 leading-tight">
@@ -1247,7 +1247,7 @@ export default function ControlHub({
                     <hr className="border-gray-100" />
 
                     {/* Booking QR Code display */}
-                    <div className="flex flex-col items-center p-4 bg-[#F7F2E8]/40 border border-gray-100 rounded-2xl">
+                    <div className="flex flex-col items-center p-4 bg-[#E8E3D8]/40 border border-gray-100 rounded-2xl">
                       <span className="text-[9px] font-black uppercase text-gray-500 tracking-widest mb-3">
                         Dynamic Check-In Ticket Code
                       </span>
@@ -1297,7 +1297,7 @@ export default function ControlHub({
                       </div>
                       <div className="flex justify-between py-1 border-b border-gray-100/50">
                         <span className="text-gray-400 font-medium">Operational Source:</span>
-                        <span className="font-extrabold text-[#0052FF] bg-blue-50 px-2 py-0.5 rounded-full text-[9px] uppercase font-black">
+                        <span className="font-extrabold text-[#0D2B35] bg-blue-50 px-2 py-0.5 rounded-full text-[9px] uppercase font-black">
                           {selectedBooking.source}
                         </span>
                       </div>
@@ -1406,13 +1406,13 @@ export default function ControlHub({
                       setCustomersSearch(e.target.value);
                       setCustomersPage(1);
                     }}
-                    className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-xs w-full focus:outline-none focus:border-[#0052FF] bg-[#F7F2E8]/40"
+                    className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-xs w-full focus:outline-none focus:border-[#0D2B35] bg-[#E8E3D8]/40"
                   />
                 </div>
                 
                 <button 
                   onClick={() => setShowAddCustomerModal(true)}
-                  className="flex items-center gap-2 bg-[#0052FF] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#0052FF]/90 transition cursor-pointer"
+                  className="flex items-center gap-2 bg-[#0D2B35] text-white px-5 py-2.5 rounded-xl text-xs font-bold hover:bg-[#0D2B35]/90 transition cursor-pointer"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Customer Directory Profile</span>
@@ -1457,7 +1457,7 @@ export default function ControlHub({
                             ₹{c.totalSpent.toLocaleString('en-IN')}
                           </td>
                           <td className="py-4 px-6">
-                            <span className="bg-[#BFA054]/10 text-[#BFA054] px-2.5 py-0.5 rounded-full text-[9px] uppercase font-black tracking-wide">
+                            <span className="bg-[#C8A86B]/10 text-[#C8A86B] px-2.5 py-0.5 rounded-full text-[9px] uppercase font-black tracking-wide">
                               {c.source}
                             </span>
                           </td>
@@ -1489,7 +1489,7 @@ export default function ControlHub({
                           onClick={() => setCustomersPage(i + 1)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer ${
                             customersPage === i + 1 
-                              ? 'bg-[#0052FF] text-white' 
+                              ? 'bg-[#0D2B35] text-white' 
                               : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
                           }`}
                         >
@@ -1527,7 +1527,7 @@ export default function ControlHub({
                       setPaymentsSearch(e.target.value);
                       setPaymentsPage(1);
                     }}
-                    className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-xs w-full focus:outline-none focus:border-[#0052FF] bg-[#F7F2E8]/40"
+                    className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl text-xs w-full focus:outline-none focus:border-[#0D2B35] bg-[#E8E3D8]/40"
                   />
                 </div>
 
@@ -1561,7 +1561,7 @@ export default function ControlHub({
                     ) : (
                       paginatedPayments.map((b) => (
                         <tr key={b.id} className="hover:bg-gray-50/50 transition">
-                          <td className="py-4 px-6 font-mono font-black text-[#0052FF]">
+                          <td className="py-4 px-6 font-mono font-black text-[#0D2B35]">
                             {b.id}
                           </td>
                           <td className="py-4 px-6 font-extrabold text-gray-900">
@@ -1615,7 +1615,7 @@ export default function ControlHub({
                           onClick={() => setPaymentsPage(i + 1)}
                           className={`px-3 py-1.5 rounded-lg text-xs font-extrabold transition cursor-pointer ${
                             paymentsPage === i + 1 
-                              ? 'bg-[#0052FF] text-white' 
+                              ? 'bg-[#0D2B35] text-white' 
                               : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
                           }`}
                         >
@@ -1657,7 +1657,7 @@ export default function ControlHub({
                       required
                       value={blockDateForm.date}
                       onChange={(e) => setBlockDateForm(prev => ({ ...prev, date: e.target.value }))}
-                      className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs flex-1 focus:outline-none focus:border-[#0052FF]"
+                      className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs flex-1 focus:outline-none focus:border-[#0D2B35]"
                     />
                     <button 
                       type="submit"
@@ -1712,13 +1712,13 @@ export default function ControlHub({
                         required
                         value={closeSlotForm.date}
                         onChange={(e) => setCloseSlotForm(prev => ({ ...prev, date: e.target.value }))}
-                        className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                        className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                       />
                       
                       <select
                         value={closeSlotForm.slot}
                         onChange={(e) => setCloseSlotForm(prev => ({ ...prev, slot: e.target.value }))}
-                        className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs bg-white focus:outline-none focus:border-[#0052FF]"
+                        className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs bg-white focus:outline-none focus:border-[#0D2B35]"
                       >
                         {SLOTS.map(s => <option key={s} value={s}>{s}</option>)}
                       </select>
@@ -1726,7 +1726,7 @@ export default function ControlHub({
 
                     <button 
                       type="submit"
-                      className="w-full bg-[#0052FF] hover:bg-[#0052FF]/95 text-white font-bold text-xs py-2.5 rounded-xl transition cursor-pointer"
+                      className="w-full bg-[#0D2B35] hover:bg-[#0D2B35]/95 text-white font-bold text-xs py-2.5 rounded-xl transition cursor-pointer"
                     >
                       Shut Down Slot Session
                     </button>
@@ -1829,7 +1829,7 @@ export default function ControlHub({
                     {!scanning ? (
                       <button 
                         onClick={handleStartCamera}
-                        className="flex-1 py-3 bg-[#0052FF] hover:bg-[#0052FF]/90 text-white text-xs font-black rounded-xl shadow-md transition cursor-pointer"
+                        className="flex-1 py-3 bg-[#0D2B35] hover:bg-[#0D2B35]/90 text-white text-xs font-black rounded-xl shadow-md transition cursor-pointer"
                       >
                         Launch Camera Viewer
                       </button>
@@ -1883,7 +1883,7 @@ export default function ControlHub({
 
                           {scanResult.booking && (
                             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 border border-gray-100 space-y-2">
-                              <span className="text-[9px] font-mono font-black text-[#0052FF] block">
+                              <span className="text-[9px] font-mono font-black text-[#0D2B35] block">
                                 Booking Reference: {scanResult.booking.id}
                               </span>
                               <div className="text-[11px] font-extrabold text-gray-800">
@@ -1925,7 +1925,7 @@ export default function ControlHub({
 
                     <select
                       onChange={handleSimulateSelectChange}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs bg-[#F7F2E8]/40 focus:outline-none focus:border-[#0052FF]"
+                      className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs bg-[#E8E3D8]/40 focus:outline-none focus:border-[#0D2B35]"
                       defaultValue=""
                     >
                       <option value="" disabled>-- Choose Booking to Simulate Scan --</option>
@@ -1936,7 +1936,7 @@ export default function ControlHub({
                       ))}
                     </select>
 
-                    <div className="text-[9px] text-[#BFA054] font-bold">
+                    <div className="text-[9px] text-[#C8A86B] font-bold">
                       💡 Select any booking from the dropdown list to immediately trigger validation, duplicate warning, and Sandbox WhatsApp messages!
                     </div>
                   </div>
@@ -1954,11 +1954,11 @@ export default function ControlHub({
                         required
                         value={manualScanInput}
                         onChange={(e) => setManualScanInput(e.target.value)}
-                        className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs flex-1 focus:outline-none focus:border-[#0052FF] bg-[#F7F2E8]/40 font-mono"
+                        className="border border-gray-200 rounded-xl px-4 py-2.5 text-xs flex-1 focus:outline-none focus:border-[#0D2B35] bg-[#E8E3D8]/40 font-mono"
                       />
                       <button 
                         type="submit"
-                        className="bg-[#0052FF] hover:bg-[#0052FF]/95 text-white font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer"
+                        className="bg-[#0D2B35] hover:bg-[#0D2B35]/95 text-white font-bold text-xs px-4 py-2 rounded-xl transition cursor-pointer"
                       >
                         Verify Code
                       </button>
@@ -2003,7 +2003,7 @@ export default function ControlHub({
                     value={bookingForm.name}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, name: e.target.value }))}
                     placeholder="Alwin Jose"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                   />
                 </div>
                 
@@ -2015,7 +2015,7 @@ export default function ControlHub({
                     value={bookingForm.phone}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, phone: e.target.value }))}
                     placeholder="+91 94470 12345"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                   />
                 </div>
               </div>
@@ -2028,7 +2028,7 @@ export default function ControlHub({
                     value={bookingForm.email}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, email: e.target.value }))}
                     placeholder="alwin@example.com"
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                   />
                 </div>
 
@@ -2039,7 +2039,7 @@ export default function ControlHub({
                     required
                     value={bookingForm.date}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, date: e.target.value }))}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                   />
                 </div>
               </div>
@@ -2090,7 +2090,7 @@ export default function ControlHub({
                     max={12}
                     value={bookingForm.guests}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, guests: parseInt(e.target.value, 10) || 1 }))}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                   />
                 </div>
 
@@ -2136,7 +2136,7 @@ export default function ControlHub({
                 </div>
               </div>
 
-              <div className="bg-[#F7F2E8]/40 border border-gray-100 rounded-2xl p-4 flex justify-between items-center">
+              <div className="bg-[#E8E3D8]/40 border border-gray-100 rounded-2xl p-4 flex justify-between items-center">
                 <div>
                   <span className="text-[10px] font-bold text-gray-400 block uppercase">Auto Calculated Bill Total</span>
                   <span className="text-lg font-black text-gray-900 block mt-0.5">₹{bookingForm.amount.toLocaleString('en-IN')}</span>
@@ -2144,7 +2144,7 @@ export default function ControlHub({
                 
                 <button 
                   type="submit"
-                  className="bg-[#0052FF] hover:bg-[#0052FF]/95 text-white font-bold text-xs px-6 py-3 rounded-xl transition cursor-pointer shadow-md"
+                  className="bg-[#0D2B35] hover:bg-[#0D2B35]/95 text-white font-bold text-xs px-6 py-3 rounded-xl transition cursor-pointer shadow-md"
                 >
                   Generate Manual Booking
                 </button>
@@ -2178,7 +2178,7 @@ export default function ControlHub({
                   required
                   value={blockDateForm.date}
                   onChange={(e) => setBlockDateForm(prev => ({ ...prev, date: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                 />
               </div>
 
@@ -2189,7 +2189,7 @@ export default function ControlHub({
                   placeholder="e.g. Heavy rainfall hazard warning"
                   value={blockDateForm.reason}
                   onChange={(e) => setBlockDateForm(prev => ({ ...prev, reason: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                 />
               </div>
 
@@ -2229,7 +2229,7 @@ export default function ControlHub({
                     required
                     value={closeSlotForm.date}
                     onChange={(e) => setCloseSlotForm(prev => ({ ...prev, date: e.target.value }))}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                    className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                   />
                 </div>
 
@@ -2252,13 +2252,13 @@ export default function ControlHub({
                   placeholder="e.g. Group tour booking override"
                   value={closeSlotForm.reason}
                   onChange={(e) => setCloseSlotForm(prev => ({ ...prev, reason: e.target.value }))}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                 />
               </div>
 
               <button 
                 type="submit"
-                className="w-full py-3 bg-[#0052FF] hover:bg-[#0052FF]/95 text-white text-xs font-black rounded-xl shadow-md transition cursor-pointer"
+                className="w-full py-3 bg-[#0D2B35] hover:bg-[#0D2B35]/95 text-white text-xs font-black rounded-xl shadow-md transition cursor-pointer"
               >
                 Shut Down Slot Session
               </button>
@@ -2292,7 +2292,7 @@ export default function ControlHub({
                   value={customerForm.name}
                   onChange={(e) => setCustomerForm(prev => ({ ...prev, name: e.target.value }))}
                   placeholder="Rahul Sharma"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                 />
               </div>
 
@@ -2304,7 +2304,7 @@ export default function ControlHub({
                   value={customerForm.phone}
                   onChange={(e) => setCustomerForm(prev => ({ ...prev, phone: e.target.value }))}
                   placeholder="+91 98765 43210"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                 />
               </div>
 
@@ -2315,7 +2315,7 @@ export default function ControlHub({
                   value={customerForm.email}
                   onChange={(e) => setCustomerForm(prev => ({ ...prev, email: e.target.value }))}
                   placeholder="rahul@example.com"
-                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0052FF]"
+                  className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                 />
               </div>
 
@@ -2335,7 +2335,7 @@ export default function ControlHub({
 
               <button 
                 type="submit"
-                className="w-full py-3 bg-[#0052FF] hover:bg-[#0052FF]/95 text-white text-xs font-black rounded-xl shadow-md transition cursor-pointer"
+                className="w-full py-3 bg-[#0D2B35] hover:bg-[#0D2B35]/95 text-white text-xs font-black rounded-xl shadow-md transition cursor-pointer"
               >
                 Create Customer Profile
               </button>
@@ -2347,3 +2347,4 @@ export default function ControlHub({
     </div>
   );
 }
+

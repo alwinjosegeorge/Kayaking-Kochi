@@ -7,15 +7,20 @@
   --font-serif: 'Playfair Display', serif;
   --font-mono: 'Space Grotesk', 'JetBrains Mono', monospace;
   
-  --color-ink: #0D0D0D;
-  --color-glacier-cyan: #7BF0DF;
-  --color-glacier-blue: #59E0CE;
-  --color-glacier-dim: #134247;
-  --color-abyss-black: #040E0F;
-  --color-nordic-teal: #082124;
-  --color-nordic-deep: #030D0E;
-  --color-glacier-gray: #92A7A9;
-  --color-glacier-light: #EFF5F6;
+  --color-ink: #0D2B35;
+  --color-glacier-cyan: #73E6D8;
+  --color-glacier-blue: #59D5CE;
+  --color-glacier-dim: #0B252F;
+  --color-abyss-black: #0D2B35;
+  --color-nordic-teal: #091F27;
+  --color-nordic-deep: #051318;
+  --color-glacier-gray: #A09C94;
+  --color-glacier-light: #E8E3D8;
+  
+  --color-cream: #E8E3D8;
+  --color-dark-brown: #4A3428;
+  --color-gold: #C8A86B;
+  --color-aqua-accent: #73E6D8;
   
   --animate-aurora: aurora 20s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
@@ -34,8 +39,11 @@
 
 /* Custom Base styles */
 html, body {
-  background-color: #040E0F; /* abyssal deep slate black */
-  color: #EFF5F6;
+  background-image: url('/bg-grain.png'), linear-gradient(180deg, #0D2B35 0%, #091F27 100%);
+  background-repeat: repeat, no-repeat;
+  background-size: auto, 100% 100%;
+  background-attachment: scroll, fixed;
+  color: #E8E3D8;
   font-family: 'Outfit', sans-serif;
   overflow-x: hidden;
   margin: 0;
@@ -48,14 +56,14 @@ html, body {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #040E0F;
+  background: #0D2B35;
 }
 ::-webkit-scrollbar-thumb {
-  background: #082124;
+  background: #091F27;
   border-radius: 10px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #7BF0DF;
+  background: #73E6D8;
 }
 
 /* Root overrides to support full viewport layout */
@@ -133,5 +141,12 @@ html.lenis, html.lenis body {
   border-color: rgba(123, 240, 223, 0.4);
   box-shadow: 0 25px 50px rgba(0, 245, 255, 0.06), 0 0 20px rgba(123, 240, 223, 0.1);
   transform: translateY(-6px);
+}
+
+.bg-premium-dark-grain {
+  background-image: url('/bg-grain.png'), linear-gradient(180deg, #0D2B35 0%, #091F27 100%);
+  background-repeat: repeat, no-repeat;
+  background-size: auto, 100% 100%;
+  background-attachment: scroll, fixed;
 }
 

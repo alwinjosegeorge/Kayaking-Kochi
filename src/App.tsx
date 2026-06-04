@@ -245,19 +245,20 @@ function App() {
   useEffect(() => {
     const loadInitialData = async () => {
       try {
-        const bookingsRes = await fetch('/api/bookings');
+        const [bookingsRes, blockedRes, closedRes] = await Promise.all([
+          fetch('/api/bookings'),
+          fetch('/api/blocked-dates'),
+          fetch('/api/closed-slots')
+        ]);
+
         if (bookingsRes.ok) {
           const data = await bookingsRes.json();
           setBookings(data);
         }
-
-        const blockedRes = await fetch('/api/blocked-dates');
         if (blockedRes.ok) {
           const data = await blockedRes.json();
           setBlockedDates(data);
         }
-
-        const closedRes = await fetch('/api/closed-slots');
         if (closedRes.ok) {
           const data = await closedRes.json();
           setClosedSlots(data);
@@ -564,20 +565,31 @@ function App() {
   const isControlHub = currentPath.startsWith('/control-hub');
   const isBoardingPass = currentPath.startsWith('/boarding-pass');
 
-  if (isLoading) {
-    return (
-      <div className="bg-[#040e0f] text-white min-h-screen flex flex-col items-center justify-center font-sans relative selection:bg-glacier-cyan selection:text-abyss-black overflow-hidden">
-        <div className="fixed inset-0 pointer-events-none z-40 bg-[linear-gradient(rgba(18,30,32,0)_98%,rgba(0,245,255,0.01)_98%)] bg-[size:100%_24px]" />
-        <div className="w-12 h-12 border-[3px] border-glacier-cyan/20 border-t-glacier-cyan rounded-full animate-spin"></div>
-        <p className="mt-5 text-[10px] font-mono tracking-[0.25em] uppercase text-glacier-cyan/80 font-semibold">
-          Connecting to Neon Database...
-        </p>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-abyss-black text-white min-h-screen relative font-sans antialiased selection:bg-glacier-cyan selection:text-abyss-black">
+      
+      {/* ──── DYNAMIC TICKET LOGO LOADING SCREEN OVERLAY ──── */}
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.35, ease: "easeInOut" }}
+            className="fixed inset-0 bg-black z-[9999] flex flex-col items-center justify-center font-sans selection:bg-glacier-cyan selection:text-black overflow-hidden pointer-events-auto"
+          >
+            {/* Ambient scanning lines overlay */}
+            <div className="absolute inset-0 pointer-events-none z-40 bg-[linear-gradient(rgba(18,30,32,0)_98%,rgba(0,245,255,0.01)_98%)] bg-[size:100%_24px]" />
+            
+            <motion.img
+              layoutId="logo-transition"
+              src="/logo.png"
+              alt="Hooked & Cooked Logo"
+              className="w-24 h-24 object-contain relative z-10"
+              transition={{ type: "spring", stiffness: 120, damping: 18 }}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Immersive subtle static grid scanning lines overlay */}
       <div className="fixed inset-0 pointer-events-none z-40 bg-[linear-gradient(rgba(18,30,32,0)_98%,rgba(0,245,255,0.01)_98%)] bg-[size:100%_24px]" />
@@ -600,10 +612,15 @@ function App() {
           }}
         />
       ) : isBoardingPass ? (
-        <BoardingPass />
+        <div className="bg-[#FAF2F0] min-h-screen">
+          <Navbar currentPath={currentPath} />
+          <div className="pt-24 print:pt-0">
+            <BoardingPass />
+          </div>
+        </div>
       ) : (
         <>
-          <Navbar />
+          <Navbar currentPath={currentPath} />
           <Hero />
           <PopularTours />
           <Intro />

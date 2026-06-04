@@ -35,7 +35,7 @@ const ROUTES = [
   },
 ];
 
-const gold  = '#BFA054';
+const gold  = '#C8A86B';
 const ink   = '#0D0D0D';
 const aqua  = '#73E6D8';
 const coral = '#E06C61';
@@ -48,7 +48,7 @@ interface BookingSectionProps {
   bookings: Booking[];
   blockedDates: string[];
   closedSlots: ClosedSlot[];
-  onAddBooking: (bookingData: Omit<Booking, 'id' | 'createdAt' | 'securityToken'>) => Booking;
+  onAddBooking: (bookingData: Omit<Booking, 'id' | 'createdAt' | 'securityToken'>) => Booking | Promise<Booking>;
 }
 
 export default function BookingSection({
@@ -95,9 +95,9 @@ export default function BookingSection({
       name: 'Hooked & Cooked',
       description: `${selectedRouteObj?.name || 'Kayak Expedition'} - ${form.guests} Guests`,
       image: '/logo.png',
-      handler: function () {
+      handler: async function () {
         // Real checkout payment success callback
-        const newBooking = onAddBooking({
+        const res = onAddBooking({
           date: form.date,
           route: form.route,
           slot: form.slot,
@@ -111,6 +111,7 @@ export default function BookingSection({
           source: 'Online',
           amount: totalPrice
         });
+        const newBooking = res instanceof Promise ? await res : res;
         setCreatedBooking(newBooking);
         setPaying(false);
         setSubmitted(true);
@@ -184,15 +185,13 @@ export default function BookingSection({
   };
 
   const getSlotAvailability = (dateStr: string, slotTime: string) => {
-    const simulatedBooked = getBookedSeats(dateStr, slotTime);
-    
     // Sum up actual real bookings for this date and slot on the selected route
     const activeRoute = form.route || 'kadambrayar';
     const realBookingsCount = bookings
       .filter(b => b.date === dateStr && b.slot === slotTime && b.route === activeRoute && b.status !== 'Cancelled')
       .reduce((sum, b) => sum + b.guests, 0);
 
-    const booked = simulatedBooked + realBookingsCount;
+    const booked = realBookingsCount;
     const remaining = Math.max(0, CAPACITY - booked);
     return { booked, remaining };
   };
@@ -310,7 +309,7 @@ export default function BookingSection({
             opacity: opacity,
             fontWeight: isSelected ? 800 : 500,
             fontSize: '12px',
-            border: isSelected ? 'none' : '1px solid #FAF9F6',
+            border: isSelected ? 'none' : '1px solid #F4EBDB',
             transition: 'all 0.15s ease',
           }}
           className="hover:scale-105 active:scale-95"
@@ -539,10 +538,10 @@ export default function BookingSection({
           justifyContent: 'space-between',
           alignItems: 'center',
           padding: '18px 24px',
-          borderBottom: '1px solid #FAF9F6',
+          borderBottom: '1px solid #F4EBDB',
           cursor: (isAccessible && !submitted) ? 'pointer' : 'not-allowed',
-          background: isActive ? '#FAF9F6' : '#FFFFFF',
-          transition: 'background 0.2s',
+          background: isActive ? 'rgba(74, 52, 40, 0.12)' : '#FFFFFF',
+          transition: 'background 0.2s, color 0.2s',
         }}
         className="flex justify-between items-center select-none"
       >
@@ -552,8 +551,8 @@ export default function BookingSection({
               width: '24px',
               height: '24px',
               borderRadius: '50%',
-              background: isActive ? ink : '#FAF9F6',
-              color: isActive ? '#FFFFFF' : '#8E8A80',
+              background: isActive ? '#4A3428' : '#F4EBDB',
+              color: isActive ? '#E8E3D8' : '#8E8A80',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
@@ -567,7 +566,7 @@ export default function BookingSection({
             style={{ 
               fontSize: '12px', 
               fontWeight: isActive ? 800 : 600, 
-              color: isActive ? ink : '#8E8A80',
+              color: isActive ? '#4A3428' : ink,
               textTransform: 'uppercase',
               letterSpacing: '1px',
             }}
@@ -583,7 +582,7 @@ export default function BookingSection({
             </span>
           )}
           {isAccessible && !isActive && !submitted && (
-            <span style={{ fontSize: '10px', color: '#BFA054', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+            <span style={{ fontSize: '10px', color: gold, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
               Edit
             </span>
           )}
@@ -596,7 +595,7 @@ export default function BookingSection({
     <section 
       id="booking-section" 
       style={{
-        background: '#FAF9F6', // Sand / Light warm background
+        background: '#F4EBDB', // Sand / Light warm background
         padding: '80px 24px',
         color: ink,
       }} 
@@ -902,7 +901,7 @@ export default function BookingSection({
                         </div>
 
                         {/* Availability Details below calendar */}
-                        <div className="mt-4 px-4 py-2.5 rounded-xl bg-[#FAF9F6] border border-[#EAE6DF] flex flex-col md:flex-row md:items-center justify-between gap-2">
+                        <div className="mt-4 px-4 py-2.5 rounded-xl bg-[#F4EBDB] border border-[#EAE6DF] flex flex-col md:flex-row md:items-center justify-between gap-2">
                           <span className="text-[10px] font-extrabold tracking-wide uppercase text-ink">
                             {getAvailabilityMessage(form.date)}
                           </span>

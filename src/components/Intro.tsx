@@ -40,7 +40,7 @@ export default function Intro() {
   ];
 
   return (
-    <section id="expeditions" className="relative py-14 md:py-28 bg-[#040e0f] overflow-hidden select-none">
+    <section id="expeditions" className="relative py-14 md:py-28 bg-abyss-black overflow-hidden select-none">
       
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10 text-center">
         

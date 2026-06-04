@@ -6,7 +6,7 @@ const HomeIcon = ({ elevated }: { elevated: boolean }) => (
     viewBox="0 0 24 24" 
     width="21" 
     height="21" 
-    stroke={elevated ? "#BFA054" : "currentColor"} 
+    stroke={elevated ? "#C8A86B" : "currentColor"} 
     strokeWidth="1.6" 
     fill="none" 
     strokeLinecap="round" 
@@ -18,7 +18,7 @@ const HomeIcon = ({ elevated }: { elevated: boolean }) => (
 );
 
 const CalendarIcon = ({ elevated }: { elevated: boolean }) => {
-  const color = elevated ? "#BFA054" : "currentColor";
+  const color = elevated ? "#C8A86B" : "currentColor";
   return (
     <svg 
       viewBox="0 0 24 24" 
@@ -49,14 +49,14 @@ const WhatsAppIcon = ({ elevated }: { elevated: boolean }) => (
     viewBox="0 0 24 24" 
     width="21" 
     height="21" 
-    stroke={elevated ? "#BFA054" : "currentColor"} 
+    stroke={elevated ? "#C8A86B" : "currentColor"} 
     strokeWidth="1.6" 
     fill="none" 
     strokeLinecap="round" 
     strokeLinejoin="round"
   >
     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-    <path d="M15.2 13.9c-.2-.1-.7-.4-.8-.4-.1 0-.2-.1-.3 0l-.4.5c-.1.1-.2.1-.4 0-.2-.1-.8-.3-1.5-1-.5-.5-.9-1.1-1-1.2-.1-.2 0-.3.1-.4l.3-.4c.1-.1.1-.2.1-.3l-.4-.8c-.1-.2-.2-.2-.3-.2l-.3.1c-.2.2-.4.4-.4.8 0 .8.6 1.7 1.5 2.5 1 1 2.2 1.6 3.1 1.6.5 0 .9-.2 1.1-.5l.1-.3c-.1-.1-.2-.1-.3-.2z" fill={elevated ? "#BFA054" : "currentColor"} stroke="none" />
+    <path d="M15.2 13.9c-.2-.1-.7-.4-.8-.4-.1 0-.2-.1-.3 0l-.4.5c-.1.1-.2.1-.4 0-.2-.1-.8-.3-1.5-1-.5-.5-.9-1.1-1-1.2-.1-.2 0-.3.1-.4l.3-.4c.1-.1.1-.2.1-.3l-.4-.8c-.1-.2-.2-.2-.3-.2l-.3.1c-.2.2-.4.4-.4.8 0 .8.6 1.7 1.5 2.5 1 1 2.2 1.6 3.1 1.6.5 0 .9-.2 1.1-.5l.1-.3c-.1-.1-.2-.1-.3-.2z" fill={elevated ? "#C8A86B" : "currentColor"} stroke="none" />
   </svg>
 );
 
@@ -223,7 +223,7 @@ export default function MobileBottomNav() {
                 height: '100%',
                 borderTop: '1.8px solid rgba(255, 255, 255, 0.08)',
               }}
-              className="bg-[#041A1F]/93 backdrop-blur-2xl"
+              className="bg-[#091F27]/93 backdrop-blur-2xl"
             />
 
             {/* Notch SVG Block */}
@@ -240,7 +240,7 @@ export default function MobileBottomNav() {
               <div 
                 style={{
                   clipPath: 'path("M 0 0 C 17 0, 19 42, 41 42 C 63 42, 65 0, 82 0 L 82 66 L 0 66 Z")',
-                  background: 'rgba(4, 26, 31, 0.93)',
+                  background: 'rgba(9, 31, 39, 0.93)',
                   backdropFilter: 'blur(28px)',
                   WebkitBackdropFilter: 'blur(28px)',
                 }}
@@ -272,7 +272,7 @@ export default function MobileBottomNav() {
                 height: '100%',
                 borderTop: '1.8px solid rgba(255, 255, 255, 0.08)',
               }}
-              className="bg-[#041A1F]/93 backdrop-blur-2xl"
+              className="bg-[#091F27]/93 backdrop-blur-2xl"
             />
           </div>
         </div>
@@ -319,18 +319,18 @@ export default function MobileBottomNav() {
               {/* Active Tab State (rises, scales up, and pulses when active) */}
               <button
                 onClick={() => handleTabClick(tab.id, tab.action)}
-                className={`pulse-fab w-[60px] h-[60px] rounded-full flex flex-col items-center justify-center border border-[#BFA054]/30 absolute`}
+                className={`pulse-fab w-[60px] h-[60px] rounded-full flex flex-col items-center justify-center border border-[#C8A86B]/30 absolute`}
                 style={{
                   opacity: isActive ? 1 : 0,
                   pointerEvents: isActive ? 'auto' : 'none',
-                  background: 'linear-gradient(135deg, #FAF8F5 0%, #F7F4EC 50%, #EAE6DF 100%)',
+                  background: 'linear-gradient(135deg, #FFFDF8 0%, #E8E3D8 100%)',
                   transition: 'all 0.38s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease-in-out',
                 }}
               >
                 <tab.icon elevated={true} />
                 <span 
                   className="text-[7.5px] font-extrabold tracking-wider leading-none uppercase mt-1"
-                  style={{ color: '#BFA054' }}
+                  style={{ color: '#C8A86B' }}
                 >
                   {tab.label}
                 </span>

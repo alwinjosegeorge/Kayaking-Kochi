@@ -15,12 +15,18 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default function Navbar() {
+interface NavbarProps {
+  currentPath?: string;
+}
+
+export default function Navbar({ currentPath = '/' }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [activeSection, setActiveSection] = useState('Home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const isHome = currentPath === '/';
 
   const navLinks = [
     { name: 'Home', href: '#' },
@@ -33,6 +39,11 @@ export default function Navbar() {
 
   const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
     if (href.startsWith('#')) {
+      if (!isHome) {
+        setMobileMenuOpen(false);
+        window.location.href = '/' + href;
+        return;
+      }
       e.preventDefault();
       setMobileMenuOpen(false);
       const targetId = href.substring(1);
@@ -108,35 +119,67 @@ export default function Navbar() {
     };
   }, [lastScrollY, mobileMenuOpen]);
 
+  // Determine theme mode (dark vs light sand)
+  const isDarkTheme = isHome;
+
+  // Define dynamic container style and classes
+  let navStyle: React.CSSProperties = {};
+  let navClass = '';
+  
+  if (isHome) {
+    if (scrolled) {
+      navStyle = {
+        backgroundImage: "url('/bg-grain.png')",
+        backgroundColor: 'rgba(9, 31, 39, 0.75)',
+        backgroundRepeat: 'repeat',
+      };
+      navClass = 'w-full px-5 sm:px-10 py-3.5 mt-0 rounded-none border-b border-cream/10 backdrop-blur-2xl';
+    } else {
+      navStyle = {};
+      navClass = 'w-full max-w-7xl px-5 sm:px-10 py-4 sm:py-6 mt-0 rounded-none border-transparent bg-transparent backdrop-blur-none';
+    }
+  } else {
+    // Other pages: always full-width sand
+    navStyle = {
+      backgroundImage: "url('/bg-grain.png')",
+      backgroundColor: '#F4EBDB',
+      backgroundRepeat: 'repeat',
+    };
+    navClass = 'w-full px-5 sm:px-10 py-4 mt-0 rounded-none border-b border-[#091F27]/12';
+  }
+
   return (
     <div className="fixed top-0 left-0 w-full z-50 flex justify-center pointer-events-none select-none">
       <nav
-        className={`w-full flex flex-col justify-between items-center pointer-events-auto relative transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+        style={navStyle}
+        className={`flex flex-col justify-between items-center pointer-events-auto relative transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] ${
           visible ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
-        } ${
-          scrolled 
-            ? 'w-[92%] max-w-5xl px-5 sm:px-8 py-3.5 mt-5 rounded-full border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.3)] bg-[#040e0f]/75 backdrop-blur-2xl'
-            : 'w-full max-w-7xl px-5 sm:px-10 py-4 sm:py-6 mt-0 rounded-none border-transparent bg-transparent backdrop-blur-none'
-        }`}
+        } ${navClass}`}
       >
         <div className="w-full flex items-center justify-between">
           
-          {/* Logo Brand Emblem with animated wave */}
-          <a href="#" className="flex items-center gap-3 group shrink-0">
-            <img 
+          {/* Logo Brand Emblem */}
+          <a href="#" onClick={(e) => handleLinkClick(e, '#')} className="flex items-center gap-3 group shrink-0">
+            <motion.img 
+              layoutId="logo-transition"
               src="/logo.png" 
               alt="Hooked & Cooked Logo" 
               className={`object-contain transition-all duration-300 shrink-0 ${
-                scrolled ? 'w-10 h-10' : 'w-12 h-12 sm:w-14 sm:h-14'
+                isHome && scrolled ? 'w-10 h-10' : 'w-11 h-11 sm:w-12 sm:h-12'
               }`}
+              transition={{ type: "spring", stiffness: 120, damping: 18 }}
             />
-            <div className={`flex flex-col items-start leading-none text-left transition-all duration-300 ${
-              scrolled ? 'w-0 opacity-0 overflow-hidden md:w-auto md:opacity-100' : 'w-auto opacity-100'
-            }`}>
-              <span className="text-xs font-black tracking-widest text-white uppercase group-hover:text-glacier-cyan transition-colors duration-300">
+            <div className="flex flex-col items-start leading-none text-left">
+              <span className={`text-[11px] font-black tracking-widest uppercase transition-colors duration-300 ${
+                isDarkTheme 
+                  ? 'text-cream group-hover:text-glacier-cyan' 
+                  : 'text-[#091F27] group-hover:text-[#0D2B35]'
+              }`}>
                 HOOKED & COOKED
               </span>
-              <span className="text-[7px] font-mono tracking-[0.25em] text-glacier-cyan/55 uppercase mt-0.5">
+              <span className={`text-[7px] font-mono tracking-[0.25em] uppercase mt-0.5 ${
+                isDarkTheme ? 'text-glacier-cyan/55' : 'text-[#091F27]/60'
+              }`}>
                 H & C BOAT CLUB
               </span>
             </div>
@@ -151,24 +194,30 @@ export default function Navbar() {
                   key={idx}
                   href={link.href}
                   onClick={(e) => handleLinkClick(e, link.href)}
-                  className={`relative py-1 text-[10px] font-mono tracking-[0.25em] uppercase transition-colors duration-300 flex flex-col items-center group/item ${
-                    isActive ? 'text-white font-black' : 'text-gray-400 hover:text-white'
+                  className={`relative py-1 text-[11px] font-sans font-bold tracking-wider uppercase transition-colors duration-300 flex flex-col items-center group/item ${
+                    isActive 
+                      ? (isDarkTheme ? 'text-cream font-black' : 'text-[#091F27]') 
+                      : (isDarkTheme ? 'text-gray-400 hover:text-cream' : 'text-[#091F27]/60 hover:text-[#091F27]')
                   }`}
                 >
                   <span>{link.name}</span>
                   
-                  {/* Subtle glowing active underline sliding below */}
+                  {/* Subtle active underline sliding below */}
                   {isActive && (
                     <motion.span
                       layoutId="active-underline"
-                      className="absolute bottom-0 left-0 w-full h-[1.5px] bg-glacier-cyan shadow-[0_1px_5px_rgba(0,245,255,0.4)]"
+                      className={`absolute bottom-0 left-0 w-full h-[1.5px] ${
+                        isDarkTheme ? 'bg-glacier-cyan shadow-[0_1px_5px_rgba(0,245,255,0.4)]' : 'bg-[#091F27]'
+                      }`}
                       transition={{ type: 'spring', stiffness: 350, damping: 30 }}
                     />
                   )}
 
                   {/* Elegant magnet underline hover effect */}
                   {!isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[1px] bg-white/40 transition-all duration-300 group-hover/item:w-1/2" />
+                    <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-[1px] transition-all duration-300 group-hover/item:w-1/2 ${
+                      isDarkTheme ? 'bg-cream/40' : 'bg-[#091F27]/30'
+                    }`} />
                   )}
                 </a>
               );
@@ -177,40 +226,73 @@ export default function Navbar() {
 
           {/* Call CTA & Social Links (Desktop) */}
           <div className="hidden lg:flex items-center space-x-5 shrink-0">
-            <div className="flex items-center space-x-2 border-r border-white/10 pr-4">
-              <a href="https://www.youtube.com/@HookedandCooked-l1l" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-glacier-cyan transition-colors duration-300 p-1.5 rounded-full hover:bg-white/5">
+            <div className={`flex items-center space-x-2 border-r pr-4 ${
+              isDarkTheme ? 'border-cream/10' : 'border-[#091F27]/12'
+            }`}>
+              <a 
+                href="https://www.youtube.com/@HookedandCooked-l1l" 
+                target="_blank" 
+                rel="noreferrer" 
+                className={`transition-colors duration-300 p-1.5 rounded-full ${
+                  isDarkTheme 
+                    ? 'text-gray-400 hover:text-glacier-cyan hover:bg-cream/5' 
+                    : 'text-[#091F27] hover:text-[#0D2B35] hover:bg-[#091F27]/5'
+                }`}
+              >
                 <YoutubeIcon />
               </a>
-              <a href="https://google.com" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-glacier-cyan transition-colors duration-300 p-1.5 rounded-full hover:bg-white/5">
+              <a 
+                href="https://google.com" 
+                target="_blank" 
+                rel="noreferrer" 
+                className={`transition-colors duration-300 p-1.5 rounded-full ${
+                  isDarkTheme 
+                    ? 'text-gray-400 hover:text-glacier-cyan hover:bg-cream/5' 
+                    : 'text-[#091F27] hover:text-[#0D2B35] hover:bg-[#091F27]/5'
+                }`}
+              >
                 <GoogleIcon />
               </a>
             </div>
 
-            <a
-              href="#booking-section"
-              onClick={(e) => handleLinkClick(e, '#booking-section')}
-              className="relative px-6 py-2.5 rounded-full text-[9px] font-mono tracking-[0.25em] uppercase text-white overflow-hidden group transition-all duration-300 border border-white/20 hover:border-glacier-cyan hover:shadow-[0_0_15px_rgba(0,245,255,0.2)]"
-            >
-              <div className="absolute inset-0 bg-glacier-cyan translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-10" />
-              <span className="relative z-10 flex items-center gap-1.5 group-hover:text-[#040e0f] transition-colors duration-300 font-bold">
-                <PhoneCall size={10} />
-                Book a Paddle
-              </span>
-            </a>
+            {isDarkTheme ? (
+              <a
+                href="#booking-section"
+                onClick={(e) => handleLinkClick(e, '#booking-section')}
+                className="relative px-6 py-2.5 rounded-full text-[9px] font-mono tracking-[0.25em] uppercase text-cream overflow-hidden group transition-all duration-300 border border-cream/20 hover:border-glacier-cyan hover:shadow-[0_0_15px_rgba(0,245,255,0.2)]"
+              >
+                <div className="absolute inset-0 bg-glacier-cyan translate-y-full group-hover:translate-y-0 transition-transform duration-300 -z-10" />
+                <span className="relative z-10 flex items-center gap-1.5 group-hover:text-[#091F27] transition-colors duration-300 font-bold">
+                  <PhoneCall size={10} />
+                  Book a Paddle
+                </span>
+              </a>
+            ) : (
+              <a
+                href="tel:+919072611622"
+                className="px-5 py-2 rounded-full text-[10px] font-sans font-bold tracking-wider uppercase text-[#091F27] border border-[#091F27] hover:bg-[#091F27] hover:text-[#FAF9F6] transition-all duration-300 bg-transparent shrink-0"
+              >
+                Call us
+              </a>
+            )}
           </div>
 
           {/* Hamburger (Mobile Toggle) */}
           <div className="flex items-center lg:hidden pr-1">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-gray-400 hover:text-white focus:outline-none transition-colors duration-300 p-2 rounded-full hover:bg-white/5"
+              className={`focus:outline-none transition-colors duration-300 p-2 rounded-full ${
+                isDarkTheme 
+                  ? 'text-gray-400 hover:text-cream hover:bg-cream/5' 
+                  : 'text-[#091F27] hover:text-[#0D2B35] hover:bg-[#091F27]/5'
+              }`}
             >
               {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
 
-        {/* Dynamic Expanding Mobile Overlay Dynamic Island */}
+        {/* Dynamic Expanding Mobile Overlay */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
@@ -218,7 +300,18 @@ export default function Navbar() {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="w-full overflow-hidden flex flex-col pt-4 pb-2 space-y-2 border-t border-white/5 mt-3 lg:hidden"
+              style={isDarkTheme ? {
+                backgroundImage: "url('/bg-grain.png')",
+                backgroundColor: '#091F27',
+                backgroundRepeat: 'repeat',
+              } : {
+                backgroundImage: "url('/bg-grain.png')",
+                backgroundColor: '#F4EBDB',
+                backgroundRepeat: 'repeat',
+              }}
+              className={`w-full overflow-hidden flex flex-col pt-4 pb-2 space-y-2 border-t mt-3 lg:hidden rounded-2xl p-4 shadow-xl ${
+                isDarkTheme ? 'border-cream/10' : 'border-[#091F27]/10'
+              }`}
             >
               {navLinks.map((link, idx) => {
                 const isActive = activeSection === link.name;
@@ -228,32 +321,62 @@ export default function Navbar() {
                     href={link.href}
                     onClick={(e) => handleLinkClick(e, link.href)}
                     className={`px-5 py-3 rounded-2xl text-[10px] font-mono tracking-[0.25em] uppercase transition-all flex items-center justify-between ${
-                      isActive ? 'bg-glacier-cyan text-[#040e0f] font-bold shadow-md' : 'text-gray-300 hover:bg-white/5 hover:text-white'
+                      isActive 
+                        ? (isDarkTheme ? 'bg-glacier-cyan text-[#091F27] font-bold shadow-md' : 'bg-[#091F27] text-[#F4EBDB] font-bold shadow-md') 
+                        : (isDarkTheme ? 'text-gray-400 hover:bg-cream/5 hover:text-cream' : 'text-[#091F27]/85 hover:bg-[#091F27]/5')
                     }`}
                   >
                     <span>{link.name}</span>
                     {isActive && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#040e0f]" />
+                      <span className={`w-1.5 h-1.5 rounded-full ${isDarkTheme ? 'bg-[#091F27]' : 'bg-[#F4EBDB]'}`} />
                     )}
                   </a>
                 );
               })}
 
-              <div className="h-[1px] bg-white/5 w-full my-2" />
+              <div className={`h-[1px] w-full my-2 ${isDarkTheme ? 'bg-cream/10' : 'bg-[#091F27]/10'}`} />
 
               <div className="flex justify-between items-center px-4 py-2">
                 <div className="flex space-x-3">
-                  <a href="https://www.youtube.com/@HookedandCooked-l1l" target="_blank" rel="noreferrer" className="text-gray-400 hover:text-glacier-cyan p-1.5 rounded-full hover:bg-white/5"><YoutubeIcon /></a>
-                  <a href="https://google.com" className="text-gray-400 hover:text-glacier-cyan p-1.5 rounded-full hover:bg-white/5"><GoogleIcon /></a>
+                  <a 
+                    href="https://www.youtube.com/@HookedandCooked-l1l" 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className={`p-1.5 rounded-full ${
+                      isDarkTheme ? 'text-gray-400 hover:text-glacier-cyan hover:bg-cream/5' : 'text-[#091F27] hover:bg-[#091F27]/5'
+                    }`}
+                  >
+                    <YoutubeIcon />
+                  </a>
+                  <a 
+                    href="https://google.com" 
+                    target="_blank" 
+                    rel="noreferrer" 
+                    className={`p-1.5 rounded-full ${
+                      isDarkTheme ? 'text-gray-400 hover:text-glacier-cyan hover:bg-cream/5' : 'text-[#091F27] hover:bg-[#091F27]/5'
+                    }`}
+                  >
+                    <GoogleIcon />
+                  </a>
                 </div>
-                <a
-                  href="#booking-section"
-                  onClick={(e) => handleLinkClick(e, '#booking-section')}
-                  className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/10 hover:bg-glacier-cyan hover:text-[#040e0f] text-[9px] font-mono tracking-[0.2em] text-white uppercase hover:scale-103 transition-all font-bold border border-white/10"
-                >
-                  <PhoneCall size={10} />
-                  Book a Paddle
-                </a>
+                {isDarkTheme ? (
+                  <a
+                    href="#booking-section"
+                    onClick={(e) => handleLinkClick(e, '#booking-section')}
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-cream/10 hover:bg-glacier-cyan hover:text-[#091F27] text-[9px] font-mono tracking-[0.2em] text-cream uppercase hover:scale-103 transition-all font-bold border border-cream/10"
+                  >
+                    <PhoneCall size={10} />
+                    Book a Paddle
+                  </a>
+                ) : (
+                  <a
+                    href="tel:+919072611622"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#091F27] hover:bg-[#091F27] hover:text-[#FAF9F6] text-[9px] font-sans tracking-[0.2em] text-[#091F27] uppercase hover:scale-103 transition-all font-bold"
+                  >
+                    <PhoneCall size={10} />
+                    Call us
+                  </a>
+                )}
               </div>
             </motion.div>
           )}
