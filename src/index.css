@@ -166,4 +166,11 @@ html.lenis, html.lenis body {
 .animate-fade-in {
   animation: fade-in 0.25s ease-out forwards;
 }
+@keyframes scale-up {
+  from { transform: translate(-50%, -48%) scale(0.96); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+.animate-scale-up {
+  animation: scale-up 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
 

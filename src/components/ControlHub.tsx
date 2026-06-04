@@ -1276,9 +1276,7 @@ export default function ControlHub({
                       className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 lg:hidden animate-fade-in"
                       onClick={() => setSelectedBookingId(null)}
                     />
-                    <div className="fixed inset-x-0 bottom-0 z-50 max-h-[92vh] overflow-y-auto lg:static lg:translate-y-0 lg:z-0 lg:max-h-none lg:w-auto bg-white rounded-t-[32px] rounded-b-none lg:rounded-3xl border border-gray-200/50 shadow-2xl lg:shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6 space-y-6 self-start relative animate-slide-up lg:animate-none">
-                      {/* Mobile drawer drag indicator handle */}
-                      <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-2 lg:hidden" />
+                    <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100%-2rem)] max-w-lg max-h-[85vh] overflow-y-auto lg:sticky lg:top-24 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:z-0 lg:max-h-[calc(100vh-120px)] lg:w-auto bg-white rounded-3xl border border-gray-200/50 shadow-2xl lg:shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6 space-y-6 lg:self-start relative animate-scale-up lg:animate-none">
                       <button 
                       onClick={() => setSelectedBookingId(null)}
                       className="absolute top-6 right-6 p-1 rounded-full text-gray-400 hover:bg-gray-100 transition"
