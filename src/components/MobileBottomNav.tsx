@@ -192,9 +192,10 @@ export default function MobileBottomNav() {
         }
       `}</style>
 
-      {/* Floating Card Wrapper */}
       <div 
         ref={containerRef}
+        role="tablist"
+        aria-label="Mobile navigation"
         className="w-full h-[66px] relative pointer-events-auto"
         style={{
           filter: 'drop-shadow(0 15px 30px rgba(0, 0, 0, 0.55))',
@@ -300,6 +301,7 @@ export default function MobileBottomNav() {
               {/* Inactive Tab State (fades out and drops when active) */}
               <button
                 onClick={() => handleTabClick(tab.id, tab.action)}
+                role="tab"
                 aria-label={tab.label}
                 aria-selected={isActive}
                 className="flex flex-col items-center justify-center gap-1 bg-none border-none absolute"
@@ -321,6 +323,7 @@ export default function MobileBottomNav() {
               {/* Active Tab State (rises, scales up, and pulses when active) */}
               <button
                 onClick={() => handleTabClick(tab.id, tab.action)}
+                role="tab"
                 aria-label={tab.label}
                 aria-selected={isActive}
                 className={`pulse-fab w-[60px] h-[60px] rounded-full flex flex-col items-center justify-center border border-[#C8A86B]/30 absolute`}

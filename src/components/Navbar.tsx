@@ -164,6 +164,8 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
               layoutId="logo-transition"
               src="/logo.webp" 
               alt="Hooked & Cooked Logo" 
+              width="48"
+              height="48"
               className={`object-contain transition-all duration-300 shrink-0 ${
                 isHome && scrolled ? 'w-10 h-10' : 'w-11 h-11 sm:w-12 sm:h-12'
               }`}

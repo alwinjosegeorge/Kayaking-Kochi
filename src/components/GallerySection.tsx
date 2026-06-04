@@ -8,6 +8,8 @@ interface GalleryItem {
   title: string;
   image: string;
   span: string; // for masonry grid aspect ratios
+  width: number;
+  height: number;
 }
 
 export default function GallerySection() {
@@ -20,56 +22,72 @@ export default function GallerySection() {
       category: 'expeditions',
       title: "Solo Backwater Exploration",
       image: "/IMG_8470.JPG.webp",
-      span: "aspect-[3/4]"
+      span: "aspect-[3/4]",
+      width: 600,
+      height: 800
     },
     {
       id: 2,
       category: 'guests',
       title: "Paddling with Water Lilies",
       image: "/IMG_8471.JPG.webp",
-      span: "aspect-square"
+      span: "aspect-square",
+      width: 800,
+      height: 800
     },
     {
       id: 3,
       category: 'mangroves',
       title: "Sunny Palm-lined Canals",
       image: "/IMG_8473.webp",
-      span: "md:col-span-2 aspect-[16/10]"
+      span: "md:col-span-2 aspect-[16/10]",
+      width: 800,
+      height: 500
     },
     {
       id: 4,
       category: 'guests',
       title: "Couples' River Date",
       image: "/IMG_8474.webp",
-      span: "aspect-[4/3]"
+      span: "aspect-[4/3]",
+      width: 800,
+      height: 600
     },
     {
       id: 5,
       category: 'sunsets',
       title: "Golden Hour Reflection",
       image: "/IMG_8475.webp",
-      span: "aspect-square"
+      span: "aspect-square",
+      width: 800,
+      height: 800
     },
     {
       id: 6,
       category: 'sunsets',
       title: "Peaceful Twilight Cruise",
       image: "/IMG_8476.webp",
-      span: "aspect-[3/4]"
+      span: "aspect-[3/4]",
+      width: 600,
+      height: 800
     },
     {
       id: 7,
       category: 'guests',
       title: "Our Furry Co-pilot",
       image: "/IMG_8477.webp",
-      span: "md:col-span-2 aspect-[16/10]"
+      span: "md:col-span-2 aspect-[16/10]",
+      width: 800,
+      height: 500
     },
     {
       id: 8,
       category: 'expeditions',
       title: "Father & Son Sunset Paddle",
       image: "/IMG_8478.webp",
-      span: "aspect-[4/3]"
+      span: "aspect-[4/3]",
+      width: 800,
+      height: 600
     }
   ];
 
@@ -96,13 +114,14 @@ export default function GallerySection() {
         </div>
 
         {/* Filter Navigation Tabs */}
-        <div className="flex flex-wrap justify-center items-center gap-3 mb-8 md:mb-16 font-mono text-[9px] tracking-widest uppercase">
+        <div role="tablist" aria-label="Gallery category filters" className="flex flex-wrap justify-center items-center gap-3 mb-8 md:mb-16 font-mono text-[9px] tracking-widest uppercase">
           {['all', 'mangroves', 'sunsets', 'guests', 'expeditions'].map((filter) => {
             const isActive = activeFilter === filter;
             return (
               <button
                 key={filter}
                 onClick={() => setActiveFilter(filter as any)}
+                role="tab"
                 aria-label={`Filter by ${filter}`}
                 aria-selected={isActive}
                 className={`px-6 py-2.5 rounded-full border transition-all duration-300 cursor-pointer ${
@@ -137,6 +156,8 @@ export default function GallerySection() {
                 <img
                   src={item.image}
                   alt={item.title}
+                  width={item.width}
+                  height={item.height}
                   className="w-full h-auto block object-contain transition-transform duration-1000 ease-out group-hover:scale-105"
                   loading="lazy"
                 />
@@ -148,9 +169,9 @@ export default function GallerySection() {
                       <span className="text-[8px] font-sans font-extrabold tracking-[0.2em] text-glacier-cyan uppercase block mb-0.5">
                         {item.category}
                       </span>
-                      <h4 className="text-[10px] sm:text-sm font-bold font-sans tracking-wide text-white leading-tight">
+                      <h3 className="text-[10px] sm:text-sm font-bold font-sans tracking-wide text-white leading-tight">
                         {item.title}
-                      </h4>
+                      </h3>
                     </div>
                     <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full border border-white/20 bg-white/10 flex items-center justify-center shrink-0">
                       <Maximize2 size={10} className="text-white" />
@@ -190,6 +211,8 @@ export default function GallerySection() {
               <img
                 src={selectedImage.image}
                 alt={selectedImage.title}
+                width={selectedImage.width}
+                height={selectedImage.height}
                 className="w-full h-full max-h-[80vh] object-contain bg-black"
               />
               <div className="absolute bottom-6 left-6 right-6 backdrop-blur-lg bg-black/60 border border-white/10 p-5 rounded-2xl text-left text-white flex items-center justify-between">

@@ -32,6 +32,8 @@ export default function Footer() {
         <img
           src="/footer_banner.webp"
           alt="Kadambrayar Kayaking silhouette banner"
+          width="1200"
+          height="280"
           className="absolute inset-0 w-full h-full object-cover z-10"
           loading="lazy"
         />
@@ -47,6 +49,8 @@ export default function Footer() {
               <img 
                 src="/logo.webp" 
                 alt="Hooked & Cooked Logo" 
+                width="56"
+                height="56"
                 className="w-12 h-12 md:w-14 md:h-14 object-contain shrink-0" 
               />
               <div className="flex flex-col leading-none">
@@ -63,7 +67,7 @@ export default function Footer() {
               River experiences through the hidden backwaters of Kochi.
             </p>
             
-            <p className="text-[10px] md:text-[11px] text-[#5a7074] italic font-serif leading-relaxed">
+            <p className="text-[10px] md:text-[11px] text-[#8fa7ab] italic font-serif leading-relaxed">
               Slow paddles. Quiet waters. Meaningful journeys.
             </p>
           </div>
@@ -147,10 +151,10 @@ export default function Footer() {
 
         {/* 3. BOTTOM BAR */}
         <div className="mt-10 md:mt-14 pt-6 border-t border-[#122d38] flex flex-col md:flex-row items-center justify-between gap-4 text-center md:text-left">
-          <span className="text-[9px] md:text-[10px] font-mono tracking-[0.15em] text-[#4a6570] uppercase">
+          <span className="text-[9px] md:text-[10px] font-mono tracking-[0.15em] text-[#809ba6] uppercase">
             © {new Date().getFullYear()} H & C Boat Club. All Rights Reserved
           </span>
-          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-5 text-[9px] md:text-[10px] font-mono tracking-[0.15em] text-[#4a6570] uppercase w-full md:w-auto">
+          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-5 text-[9px] md:text-[10px] font-mono tracking-[0.15em] text-[#809ba6] uppercase w-full md:w-auto">
             <div className="flex items-center justify-center gap-4">
               <a href="#privacy" className="hover:text-[#8a9fa3] transition-colors">Privacy Policy</a>
               <span className="text-[#1a3a45]">•</span>
@@ -163,7 +167,7 @@ export default function Footer() {
                 href="https://codexorastudio.vercel.app/" 
                 target="_blank" 
                 rel="noopener noreferrer" 
-                className="text-[#C8A86B]/60 hover:text-[#C8A86B] transition-all duration-300 font-bold uppercase"
+                className="text-[#C8A86B]/90 hover:text-[#C8A86B] transition-all duration-300 font-bold uppercase"
               >
                 Codexora Studio
               </a>

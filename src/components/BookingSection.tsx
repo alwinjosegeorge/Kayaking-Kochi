@@ -564,17 +564,19 @@ export default function BookingSection({
           >
             {num}
           </div>
-          <span 
+          <h3 
             style={{ 
               fontSize: '12px', 
               fontWeight: isActive ? 800 : 600, 
               color: isActive ? '#4A3428' : ink,
               textTransform: 'uppercase',
               letterSpacing: '1px',
+              margin: 0,
+              display: 'inline',
             }}
           >
             {title}
-          </span>
+          </h3>
         </div>
         
         <div className="flex items-center gap-2">

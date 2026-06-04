@@ -14,6 +14,8 @@ export default function VideoSection() {
         <img
           src="/hero_bg.webp"
           alt="Panoramic Kayaking along Scenic Kochi Waterways"
+          width="1200"
+          height="514"
           className="w-full h-full object-cover opacity-80 transition-transform duration-10000 ease-out group-hover:scale-103"
           loading="lazy"
         />

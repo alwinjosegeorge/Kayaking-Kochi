@@ -128,24 +128,32 @@ export default function Reviews() {
           </button>
 
           {/* Dot indicators */}
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-1">
             {reviews.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
                 aria-label={`Review ${i + 1}`}
-                className="focus:outline-none transition-all duration-400"
+                className="focus:outline-none flex items-center justify-center cursor-pointer"
                 style={{
-                  width: current === i ? '28px' : '7px',
-                  height: '7px',
-                  borderRadius: '9999px',
-                  background: current === i ? '#A98C64' : 'rgba(169,140,100,0.3)',
-                  transition: 'width 0.4s ease, background 0.3s ease',
+                  width: current === i ? '32px' : '16px',
+                  height: '32px',
+                  background: 'transparent',
                   border: 'none',
                   padding: 0,
-                  cursor: 'pointer',
                 }}
-              />
+              >
+                <span
+                  style={{
+                    width: current === i ? '28px' : '7px',
+                    height: '7px',
+                    borderRadius: '9999px',
+                    background: current === i ? '#A98C64' : 'rgba(169,140,100,0.3)',
+                    transition: 'width 0.4s ease, background 0.3s ease',
+                    display: 'block',
+                  }}
+                />
+              </button>
             ))}
           </div>
 

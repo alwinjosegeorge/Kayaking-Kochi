@@ -112,6 +112,8 @@ export default function MultiDayTours() {
                   <img
                     src={exp.image}
                     alt={exp.title}
+                    width="340"
+                    height="212"
                     className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-106"
                     loading="lazy"
                   />

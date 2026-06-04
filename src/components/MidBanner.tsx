@@ -82,6 +82,8 @@ export default function MidBanner() {
               <img
                 src="/sunset_tour.webp"
                 alt="Family Kayaking under Kerala Coconut Palms"
+                width="540"
+                height="360"
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-104"
                 loading="lazy"
               />

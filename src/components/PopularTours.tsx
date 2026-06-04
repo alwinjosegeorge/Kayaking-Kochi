@@ -93,6 +93,8 @@ export default function PopularTours() {
                 <img
                   src={tour.image}
                   alt={tour.title}
+                  width="294"
+                  height="368"
                   className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-106"
                   loading="lazy"
                 />
