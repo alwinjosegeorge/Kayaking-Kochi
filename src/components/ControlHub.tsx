@@ -605,6 +605,171 @@ export default function ControlHub({
     return found ? found.name : routeId;
   };
 
+  // Render Inspect Details Content helper to avoid markup duplication between desktop sidebar and mobile modal
+  const renderDetailsContent = () => {
+    if (!selectedBooking) return null;
+    return (
+      <>
+        <button 
+          onClick={() => setSelectedBookingId(null)}
+          className="absolute top-6 right-6 p-1 rounded-full text-gray-400 hover:bg-gray-100 transition"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        <div>
+          <span className="text-[10px] font-mono font-black text-[#0D2B35] block mb-1">
+            {selectedBooking.id}
+          </span>
+          <h4 className="text-lg font-black text-gray-900 leading-tight">
+            {selectedBooking.name}
+          </h4>
+          <span className="text-[10px] uppercase font-bold text-gray-400 block mt-1 tracking-wider">
+            Registered Booking Dossier
+          </span>
+        </div>
+
+        <hr className="border-gray-100" />
+
+        {/* Booking QR Code display */}
+        <div className="flex flex-col items-center p-4 bg-[#E8E3D8]/40 border border-gray-100 rounded-2xl">
+          <span className="text-[9px] font-black uppercase text-gray-500 tracking-widest mb-3">
+            Dynamic Check-In Ticket Code
+          </span>
+          
+          {selectedQrUrl ? (
+            <img 
+              src={selectedQrUrl}
+              alt="Check In QR"
+              className="w-36 h-36 bg-white p-1 rounded-lg border shadow-sm"
+            />
+          ) : (
+            <div className="w-36 h-36 flex items-center justify-center bg-white rounded-lg border shadow-sm text-xs font-bold text-gray-400 animate-pulse">
+              Generating QR...
+            </div>
+          )}
+          
+          <span className="text-[9px] font-mono text-gray-400 mt-2">
+            Code generates live scannable payload
+          </span>
+        </div>
+
+        {/* Particulars details info grid */}
+        <div className="space-y-3 text-xs">
+          <div className="flex justify-between py-1 border-b border-gray-100/50">
+            <span className="text-gray-400 font-medium">Selected Route:</span>
+            <span className="font-extrabold text-gray-800">{getRouteName(selectedBooking.route)}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-100/50">
+            <span className="text-gray-400 font-medium">Session Slot:</span>
+            <span className="font-extrabold text-gray-800">{selectedBooking.slot}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-100/50">
+            <span className="text-gray-400 font-medium">Date & Type:</span>
+            <span className="font-extrabold text-gray-800">{selectedBooking.date} ({selectedBooking.kayakType})</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-100/50">
+            <span className="text-gray-400 font-medium">Passenger Guests:</span>
+            <span className="font-extrabold text-gray-800">{selectedBooking.guests} Paddlers</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-100/50">
+            <span className="text-gray-400 font-medium">Contact Phone:</span>
+            <span className="font-extrabold text-gray-800">{selectedBooking.phone}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-100/50">
+            <span className="text-gray-400 font-medium">Email Log:</span>
+            <span className="font-extrabold text-gray-800 truncate max-w-[150px]">{selectedBooking.email}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-100/50">
+            <span className="text-gray-400 font-medium">Operational Source:</span>
+            <span className="font-extrabold text-[#0D2B35] bg-blue-50 px-2 py-0.5 rounded-full text-[9px] uppercase font-black">
+              {selectedBooking.source}
+            </span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-100/50">
+            <span className="text-gray-400 font-medium">Amount Paid:</span>
+            <span className="font-black text-gray-900">₹{selectedBooking.amount}</span>
+          </div>
+          <div className="flex justify-between py-1 border-b border-gray-100/50 items-center">
+            <span className="text-gray-400 font-medium">Payment State:</span>
+            <select 
+              value={selectedBooking.paymentStatus}
+              onChange={(e) => {
+                const updated = { ...selectedBooking, paymentStatus: e.target.value as any };
+                onUpdateBooking(updated);
+              }}
+              className="bg-gray-50 border border-gray-200 rounded px-2 py-1 font-bold text-gray-800 focus:outline-none"
+            >
+              <option value="Paid">Paid</option>
+              <option value="Unpaid">Unpaid</option>
+              <option value="Refunded">Refunded</option>
+            </select>
+          </div>
+          
+          {selectedBooking.status === 'Checked In' && (
+            <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3.5 mt-4 text-[11px] text-emerald-800 leading-relaxed">
+              <div className="font-extrabold flex items-center gap-1.5 mb-1 text-emerald-900">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Check-In Verified
+              </div>
+              Boarded at {selectedBooking.checkInTime} on {selectedBooking.checkInDate}
+            </div>
+          )}
+        </div>
+
+        <div className="pt-4 space-y-2">
+          {selectedBooking.status !== 'Checked In' && selectedBooking.status !== 'Cancelled' && (
+            <button 
+              onClick={() => {
+                const res = onConfirmCheckIn(selectedBooking.id, undefined, true);
+                if (res.success) {
+                  setScanResult({
+                    success: true,
+                    message: 'Check-In recorded successfully!',
+                    booking: res.booking
+                  });
+                }
+              }}
+              className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md transition cursor-pointer"
+            >
+              Confirm Boat Check-In
+            </button>
+          )}
+
+          {selectedBooking.status !== 'Cancelled' && (
+            <button 
+              onClick={() => handleSendWhatsApp(selectedBooking)}
+              className="w-full py-2.5 bg-[#00a884] hover:bg-[#00a884]/95 text-white rounded-xl text-xs font-black shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              Send WhatsApp Confirmation
+            </button>
+          )}
+
+          {selectedBooking.status !== 'Cancelled' ? (
+            <button 
+              onClick={() => {
+                const updated = { ...selectedBooking, status: 'Cancelled' as const };
+                onUpdateBooking(updated);
+              }}
+              className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-extrabold transition cursor-pointer"
+            >
+              Cancel Booking Order
+            </button>
+          ) : (
+            <button 
+              onClick={() => {
+                const updated = { ...selectedBooking, status: 'Confirmed' as const };
+                onUpdateBooking(updated);
+              }}
+              className="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl text-xs font-extrabold transition cursor-pointer"
+            >
+              Restore Booking Order
+            </button>
+          )}
+        </div>
+      </>
+    );
+  };
+
   return (
     <div className="flex min-h-screen bg-[#E8E3D8] text-[#0D0D0D] font-sans antialiased overflow-x-hidden relative">
       
@@ -1269,173 +1434,11 @@ export default function ControlHub({
 
                 </div>
 
-                {/* Inspect Details panel */}
+                {/* Inspect Details panel (Desktop view) */}
                 {selectedBookingId && selectedBooking && (
-                  <>
-                    <div 
-                      className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 lg:hidden animate-fade-in"
-                      onClick={() => setSelectedBookingId(null)}
-                    />
-                    <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100%-2rem)] max-w-lg max-h-[85vh] overflow-y-auto lg:sticky lg:top-24 lg:left-auto lg:translate-x-0 lg:translate-y-0 lg:z-0 lg:max-h-[calc(100vh-120px)] lg:w-auto bg-white rounded-3xl border border-gray-200/50 shadow-2xl lg:shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6 space-y-6 lg:self-start relative animate-scale-up lg:animate-none">
-                      <button 
-                      onClick={() => setSelectedBookingId(null)}
-                      className="absolute top-6 right-6 p-1 rounded-full text-gray-400 hover:bg-gray-100 transition"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-
-                    <div>
-                      <span className="text-[10px] font-mono font-black text-[#0D2B35] block mb-1">
-                        {selectedBooking.id}
-                      </span>
-                      <h4 className="text-lg font-black text-gray-900 leading-tight">
-                        {selectedBooking.name}
-                      </h4>
-                      <span className="text-[10px] uppercase font-bold text-gray-400 block mt-1 tracking-wider">
-                        Registered Booking Dossier
-                      </span>
-                    </div>
-
-                    <hr className="border-gray-100" />
-
-                    {/* Booking QR Code display */}
-                    <div className="flex flex-col items-center p-4 bg-[#E8E3D8]/40 border border-gray-100 rounded-2xl">
-                      <span className="text-[9px] font-black uppercase text-gray-500 tracking-widest mb-3">
-                        Dynamic Check-In Ticket Code
-                      </span>
-                      
-                      {selectedQrUrl ? (
-                        <img 
-                          src={selectedQrUrl}
-                          alt="Check In QR"
-                          className="w-36 h-36 bg-white p-1 rounded-lg border shadow-sm"
-                        />
-                      ) : (
-                        <div className="w-36 h-36 flex items-center justify-center bg-white rounded-lg border shadow-sm text-xs font-bold text-gray-400 animate-pulse">
-                          Generating QR...
-                        </div>
-                      )}
-                      
-                      <span className="text-[9px] font-mono text-gray-400 mt-2">
-                        Code generates live scannable payload
-                      </span>
-                    </div>
-
-                    {/* Particulars details info grid */}
-                    <div className="space-y-3 text-xs">
-                      <div className="flex justify-between py-1 border-b border-gray-100/50">
-                        <span className="text-gray-400 font-medium">Selected Route:</span>
-                        <span className="font-extrabold text-gray-800">{getRouteName(selectedBooking.route)}</span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b border-gray-100/50">
-                        <span className="text-gray-400 font-medium">Session Slot:</span>
-                        <span className="font-extrabold text-gray-800">{selectedBooking.slot}</span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b border-gray-100/50">
-                        <span className="text-gray-400 font-medium">Date & Type:</span>
-                        <span className="font-extrabold text-gray-800">{selectedBooking.date} ({selectedBooking.kayakType})</span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b border-gray-100/50">
-                        <span className="text-gray-400 font-medium">Passenger Guests:</span>
-                        <span className="font-extrabold text-gray-800">{selectedBooking.guests} Paddlers</span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b border-gray-100/50">
-                        <span className="text-gray-400 font-medium">Contact Phone:</span>
-                        <span className="font-extrabold text-gray-800">{selectedBooking.phone}</span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b border-gray-100/50">
-                        <span className="text-gray-400 font-medium">Email Log:</span>
-                        <span className="font-extrabold text-gray-800 truncate max-w-[150px]">{selectedBooking.email}</span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b border-gray-100/50">
-                        <span className="text-gray-400 font-medium">Operational Source:</span>
-                        <span className="font-extrabold text-[#0D2B35] bg-blue-50 px-2 py-0.5 rounded-full text-[9px] uppercase font-black">
-                          {selectedBooking.source}
-                        </span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b border-gray-100/50">
-                        <span className="text-gray-400 font-medium">Amount Paid:</span>
-                        <span className="font-black text-gray-900">₹{selectedBooking.amount}</span>
-                      </div>
-                      <div className="flex justify-between py-1 border-b border-gray-100/50 items-center">
-                        <span className="text-gray-400 font-medium">Payment State:</span>
-                        <select 
-                          value={selectedBooking.paymentStatus}
-                          onChange={(e) => {
-                            const updated = { ...selectedBooking, paymentStatus: e.target.value as any };
-                            onUpdateBooking(updated);
-                          }}
-                          className="bg-gray-50 border border-gray-200 rounded px-2 py-1 font-bold text-gray-800 focus:outline-none"
-                        >
-                          <option value="Paid">Paid</option>
-                          <option value="Unpaid">Unpaid</option>
-                          <option value="Refunded">Refunded</option>
-                        </select>
-                      </div>
-                      
-                      {selectedBooking.status === 'Checked In' && (
-                        <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3.5 mt-4 text-[11px] text-emerald-800 leading-relaxed">
-                          <div className="font-extrabold flex items-center gap-1.5 mb-1 text-emerald-900">
-                            <CheckCircle2 className="w-4 h-4 text-emerald-600" /> Check-In Verified
-                          </div>
-                          Boarded at {selectedBooking.checkInTime} on {selectedBooking.checkInDate}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="pt-4 space-y-2">
-                      {selectedBooking.status !== 'Checked In' && selectedBooking.status !== 'Cancelled' && (
-                        <button 
-                          onClick={() => {
-                            const res = onConfirmCheckIn(selectedBooking.id, undefined, true);
-                            if (res.success) {
-                              setScanResult({
-                                success: true,
-                                message: 'Check-In recorded successfully!',
-                                booking: res.booking
-                              });
-                            }
-                          }}
-                          className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black shadow-md transition cursor-pointer"
-                        >
-                          Confirm Boat Check-In
-                        </button>
-                      )}
-
-                      {selectedBooking.status !== 'Cancelled' && (
-                        <button 
-                          onClick={() => handleSendWhatsApp(selectedBooking)}
-                          className="w-full py-2.5 bg-[#00a884] hover:bg-[#00a884]/95 text-white rounded-xl text-xs font-black shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
-                        >
-                          Send WhatsApp Confirmation
-                        </button>
-                      )}
-
-                      {selectedBooking.status !== 'Cancelled' ? (
-                        <button 
-                          onClick={() => {
-                            const updated = { ...selectedBooking, status: 'Cancelled' as const };
-                            onUpdateBooking(updated);
-                          }}
-                          className="w-full py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl text-xs font-extrabold transition cursor-pointer"
-                        >
-                          Cancel Booking Order
-                        </button>
-                      ) : (
-                        <button 
-                          onClick={() => {
-                            const updated = { ...selectedBooking, status: 'Confirmed' as const };
-                            onUpdateBooking(updated);
-                          }}
-                          className="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 rounded-xl text-xs font-extrabold transition cursor-pointer"
-                        >
-                          Restore Booking Order
-                        </button>
-                      )}
-                    </div>
-
-                    </div>
-                  </>
+                  <div className="hidden lg:block sticky top-24 max-h-[calc(100vh-120px)] w-auto bg-white rounded-3xl border border-gray-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6 space-y-6 self-start relative overflow-y-auto">
+                    {renderDetailsContent()}
+                  </div>
                 )}
 
               </div>
@@ -2463,6 +2466,21 @@ export default function ControlHub({
                 Create Customer Profile
               </button>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile Inspect Details Modal */}
+      {selectedBookingId && selectedBooking && (
+        <div className="lg:hidden text-left">
+          <div 
+            className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 animate-fade-in"
+            onClick={() => setSelectedBookingId(null)}
+          />
+          <div className="fixed inset-x-0 bottom-0 z-50 max-h-[92vh] overflow-y-auto bg-white rounded-t-[32px] rounded-b-none border-t border-gray-200/50 shadow-2xl p-6 pb-10 space-y-6 animate-slide-up">
+            {/* Mobile drawer drag indicator handle */}
+            <div className="w-12 h-1 bg-gray-200 rounded-full mx-auto mb-2" />
+            {renderDetailsContent()}
           </div>
         </div>
       )}
