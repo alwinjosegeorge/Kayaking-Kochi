@@ -49,9 +49,10 @@ export default function PaddleTogether() {
               className="lg:col-span-6 relative rounded-3xl overflow-hidden shadow-[0_15px_40px_rgba(7,25,29,0.10)] group aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto lg:h-[400px] border border-[#e8e2da]"
             >
               <img
-                src="/sunset_tour.jpg"
+                src="/sunset_tour.webp"
                 alt="Family Kayaking under Kerala Coconut Palms"
                 className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-104"
+                loading="lazy"
               />
 
               {/* Floating Transparent 'LEARN MORE' Pill */}

@@ -12,9 +12,10 @@ export default function VideoSection() {
       <div className="relative w-full aspect-[21/9] md:aspect-[24/9] overflow-hidden border-t border-glacier-cyan/15 group">
         <div className="absolute inset-0 bg-gradient-to-b from-abyss-black via-abyss-black/25 to-transparent z-10" />
         <img
-          src="/hero_bg.jpg"
+          src="/hero_bg.webp"
           alt="Panoramic Kayaking along Scenic Kochi Waterways"
           className="w-full h-full object-cover opacity-80 transition-transform duration-10000 ease-out group-hover:scale-103"
+          loading="lazy"
         />
 
         {/* Centered Transparent 'WATCH VIDEO' Play Button Overlay */}

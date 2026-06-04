@@ -39,7 +39,7 @@
 
 /* Custom Base styles */
 html, body {
-  background-image: url('/bg-grain.png'), linear-gradient(180deg, #0D2B35 0%, #091F27 100%);
+  background-image: url('/bg-grain.webp'), linear-gradient(180deg, #0D2B35 0%, #091F27 100%);
   background-repeat: repeat, no-repeat;
   background-size: auto, 100% 100%;
   background-attachment: scroll, scroll;
@@ -150,7 +150,7 @@ html.lenis, html.lenis body {
 }
 
 .bg-premium-dark-grain {
-  background-image: url('/bg-grain.png'), linear-gradient(180deg, #0D2B35 0%, #091F27 100%);
+  background-image: url('/bg-grain.webp'), linear-gradient(180deg, #0D2B35 0%, #091F27 100%);
   background-repeat: repeat, no-repeat;
   background-size: auto, 100% 100%;
   background-attachment: scroll, scroll;

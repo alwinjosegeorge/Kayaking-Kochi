@@ -19,7 +19,7 @@ export const localBusinessSchema: Schema = {
   description:
     "Guided backwater kayaking tours on the Kadambrayar river and riverside seafood dining near Kakkanad, Kochi, Kerala.",
   url: siteConfig.url,
-  logo: `${siteConfig.url}/logo.png`,
+  logo: `${siteConfig.url}/logo.webp`,
   image: `${siteConfig.url}${siteConfig.ogImage}`,
   telephone: siteConfig.phone,
   email: siteConfig.email,

@@ -32,7 +32,7 @@ const expeditions = [
     duration: "3 Days / 2 Nights",
     location: "Kadambrayar Countryside",
     temperature: "24°C to 32°C",
-    image: "/mangrove_tour.jpg",
+    image: "/mangrove_tour.webp",
     description: "Deep wilderness river kayaking through tranquil country canals. Winding past local villages, lush paddy fields, and historic coconut groves.",
     highlights: [
       "Camp under swaying coconut palms",
@@ -46,7 +46,7 @@ const expeditions = [
     duration: "2 Days / 1 Night",
     location: "Kadamakkudy Islands Reserve",
     temperature: "25°C to 33°C",
-    image: "/kadamakkudy_tour.jpg",
+    image: "/kadamakkudy_tour.webp",
     description: "Perfect introduction to wilderness island camping and kayaking. Ideal for families and adventurers who want to experience remote country islets without extreme challenges.",
     highlights: [
       "Stunning countryside vistas",
@@ -60,7 +60,7 @@ const expeditions = [
     duration: "5 Days / 4 Nights",
     location: "Outer Vembanad Lake Coast",
     temperature: "22°C to 30°C",
-    image: "/vembanad_tour.jpg",
+    image: "/vembanad_tour.webp",
     description: "Our most remote backwaters voyage. We paddle deep into the largest lake in Kerala, discovering quiet fishing islets and traditional houseboat channels.",
     highlights: [
       "Explore quiet backwater channels",
@@ -113,6 +113,7 @@ export default function MultiDayTours() {
                     src={exp.image}
                     alt={exp.title}
                     className="w-full h-full object-cover transition-transform duration-1000 ease-out group-hover:scale-106"
+                    loading="lazy"
                   />
                   <div className="absolute bottom-4 left-4 z-20 flex items-center gap-2">
                     <span className="px-3.5 py-1.5 rounded-full bg-[#07191d] text-[9px] font-mono tracking-widest text-white uppercase flex items-center gap-1.5 shadow-md">

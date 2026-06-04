@@ -129,7 +129,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
   if (isHome) {
     if (scrolled) {
       navStyle = {
-        backgroundImage: "url('/bg-grain.png')",
+        backgroundImage: "url('/bg-grain.webp')",
         backgroundColor: 'rgba(9, 31, 39, 0.75)',
         backgroundRepeat: 'repeat',
       };
@@ -141,7 +141,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
   } else {
     // Other pages: always full-width sand
     navStyle = {
-      backgroundImage: "url('/bg-grain.png')",
+      backgroundImage: "url('/bg-grain.webp')",
       backgroundColor: '#F4EBDB',
       backgroundRepeat: 'repeat',
     };
@@ -162,7 +162,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
           <a href="#" onClick={(e) => handleLinkClick(e, '#')} className="flex items-center gap-3 group shrink-0">
             <motion.img 
               layoutId="logo-transition"
-              src="/logo.png" 
+              src="/logo.webp" 
               alt="Hooked & Cooked Logo" 
               className={`object-contain transition-all duration-300 shrink-0 ${
                 isHome && scrolled ? 'w-10 h-10' : 'w-11 h-11 sm:w-12 sm:h-12'
@@ -301,11 +301,11 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
               style={isDarkTheme ? {
-                backgroundImage: "url('/bg-grain.png')",
+                backgroundImage: "url('/bg-grain.webp')",
                 backgroundColor: '#091F27',
                 backgroundRepeat: 'repeat',
               } : {
-                backgroundImage: "url('/bg-grain.png')",
+                backgroundImage: "url('/bg-grain.webp')",
                 backgroundColor: '#F4EBDB',
                 backgroundRepeat: 'repeat',
               }}

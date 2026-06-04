@@ -19,19 +19,19 @@ const ROUTES = [
     id: 'kadambrayar',
     name: 'Kadambrayar River Expedition',
     desc: 'Glide through pristine mangrove forests during sunrise.',
-    image: '/mangrove_tour.jpg',
+    image: '/mangrove_tour.webp',
   },
   {
     id: 'vembanad',
     name: 'Vembanad Backwater Odyssey',
     desc: 'Explore the wide wilderness and traditional canals.',
-    image: '/vembanad_tour.jpg',
+    image: '/vembanad_tour.webp',
   },
   {
     id: 'kadamakudy',
     name: 'Kadamakudy Village Explorer',
     desc: 'Immerse in local island fish farms and sunset views.',
-    image: '/sunset_tour.jpg',
+    image: '/sunset_tour.webp',
   },
 ];
 
@@ -94,7 +94,7 @@ export default function BookingSection({
       currency: 'INR',
       name: 'Hooked & Cooked',
       description: `${selectedRouteObj?.name || 'Kayak Expedition'} - ${form.guests} Guests`,
-      image: '/logo.png',
+      image: '/logo.webp',
       handler: async function () {
         // Real checkout payment success callback
         const res = onAddBooking({
@@ -960,6 +960,7 @@ export default function BookingSection({
                                   src={route.image} 
                                   alt={route.name} 
                                   className="w-16 h-16 rounded-xl object-cover" 
+                                  loading="lazy"
                                 />
                                 <div className="text-left flex-1 min-w-0">
                                   <h4 className="text-[12.5px] font-black text-ink uppercase tracking-wide truncate">
@@ -1068,8 +1069,8 @@ export default function BookingSection({
                       >
                         <div className="grid grid-cols-2 gap-3 max-w-sm mx-auto">
                           {[
-                            { type: 'single' as const, label: 'Single Kayak', sub: '₹450 / Person', icon: '/single_kayak.jpg' },
-                            { type: 'double' as const, label: 'Double Kayak', sub: '₹900 / Hull', icon: '/double_kayak.jpg' },
+                            { type: 'single' as const, label: 'Single Kayak', sub: '₹450 / Person', icon: '/single_kayak.webp' },
+                            { type: 'double' as const, label: 'Double Kayak', sub: '₹900 / Hull', icon: '/double_kayak.webp' },
                           ].map(item => {
                             const isSelected = form.kayakType === item.type;
                             return (
@@ -1096,7 +1097,7 @@ export default function BookingSection({
                                   boxShadow: isSelected ? '0 4px 15px rgba(0,0,0,0.05)' : 'none',
                                 }}
                               >
-                                <img src={item.icon} alt={item.label} className="w-12 h-12 object-contain mb-1" />
+                                <img src={item.icon} alt={item.label} className="w-12 h-12 object-contain mb-1" loading="lazy" />
                                 <span className="text-[12.5px] font-black uppercase tracking-wide leading-none">{item.label}</span>
                                 <span className="text-[10px] text-gray-500 font-medium mt-0.5">{item.sub}</span>
                               </button>

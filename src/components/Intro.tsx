@@ -18,22 +18,22 @@ const WhaleTailSVG = () => (
 export default function Intro() {
   const cards = [
     {
-      icon: <img src="/family.png" alt="Family Owned" className="w-16 h-16 object-contain" />,
+      icon: <img src="/family.webp" alt="Family Owned" className="w-16 h-16 object-contain" loading="lazy" />,
       title: "FAMILY OWNED &\nLOCALLY OPERATED",
       desc: "Based in Kadambrayar, Kochi, we create peaceful kayaking experiences through Kerala’s beautiful backwaters for families, couples, and adventure lovers."
     },
     {
-      icon: <img src="/kayak.png" alt="Small Group" className="w-16 h-16 object-contain" />,
+      icon: <img src="/kayak.png" alt="Small Group" className="w-16 h-16 object-contain" loading="lazy" />,
       title: "SMALL GROUP &\nPRIVATE KAYAKING",
       desc: "Enjoy calm waters, scenic routes, and curated kayaking adventures designed for small groups, couples, and private experiences."
     },
     {
-      icon: <img src="/eco.png" alt="Eco Tourism" className="w-16 h-16 object-contain" />,
+      icon: <img src="/eco.webp" alt="Eco Tourism" className="w-16 h-16 object-contain" loading="lazy" />,
       title: "ECO TOURISM &\nNATURE EXPERIENCES",
       desc: "We believe in responsible tourism that respects nature, protects backwaters, and creates meaningful outdoor experiences."
     },
     {
-      icon: <img src="/guide.png" alt="Local Guides" className="w-16 h-16 object-contain" />,
+      icon: <img src="/guide.webp" alt="Local Guides" className="w-16 h-16 object-contain" loading="lazy" />,
       title: "GUIDED BY LOCAL\nEXPERTS",
       desc: "Our experienced local guides ensure a safe, beginner-friendly, and unforgettable kayaking experience across Kadambrayar."
     }

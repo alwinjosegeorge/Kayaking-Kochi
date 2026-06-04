@@ -30,9 +30,10 @@ export default function Footer() {
       <div className="relative w-full h-[220px] md:h-[280px] overflow-hidden">
         <div className="absolute inset-0 bg-[#F4EBDB] z-0" />
         <img
-          src="/footer_banner.png"
+          src="/footer_banner.webp"
           alt="Kadambrayar Kayaking silhouette banner"
           className="absolute inset-0 w-full h-full object-cover z-10"
+          loading="lazy"
         />
       </div>
 
@@ -44,7 +45,7 @@ export default function Footer() {
           <div className="col-span-2 lg:col-span-1 space-y-4">
             <div className="flex items-center gap-3">
               <img 
-                src="/logo.png" 
+                src="/logo.webp" 
                 alt="Hooked & Cooked Logo" 
                 className="w-12 h-12 md:w-14 md:h-14 object-contain shrink-0" 
               />

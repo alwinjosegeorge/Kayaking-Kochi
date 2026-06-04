@@ -19,56 +19,56 @@ export default function GallerySection() {
       id: 1,
       category: 'expeditions',
       title: "Solo Backwater Exploration",
-      image: "/IMG_8470.JPG.jpg",
+      image: "/IMG_8470.JPG.webp",
       span: "aspect-[3/4]"
     },
     {
       id: 2,
       category: 'guests',
       title: "Paddling with Water Lilies",
-      image: "/IMG_8471.JPG.jpg",
+      image: "/IMG_8471.JPG.webp",
       span: "aspect-square"
     },
     {
       id: 3,
       category: 'mangroves',
       title: "Sunny Palm-lined Canals",
-      image: "/IMG_8473.png",
+      image: "/IMG_8473.webp",
       span: "md:col-span-2 aspect-[16/10]"
     },
     {
       id: 4,
       category: 'guests',
       title: "Couples' River Date",
-      image: "/IMG_8474.png",
+      image: "/IMG_8474.webp",
       span: "aspect-[4/3]"
     },
     {
       id: 5,
       category: 'sunsets',
       title: "Golden Hour Reflection",
-      image: "/IMG_8475.png",
+      image: "/IMG_8475.webp",
       span: "aspect-square"
     },
     {
       id: 6,
       category: 'sunsets',
       title: "Peaceful Twilight Cruise",
-      image: "/IMG_8476.png",
+      image: "/IMG_8476.webp",
       span: "aspect-[3/4]"
     },
     {
       id: 7,
       category: 'guests',
       title: "Our Furry Co-pilot",
-      image: "/IMG_8477.png",
+      image: "/IMG_8477.webp",
       span: "md:col-span-2 aspect-[16/10]"
     },
     {
       id: 8,
       category: 'expeditions',
       title: "Father & Son Sunset Paddle",
-      image: "/IMG_8478.jpg",
+      image: "/IMG_8478.webp",
       span: "aspect-[4/3]"
     }
   ];
@@ -136,6 +136,7 @@ export default function GallerySection() {
                   src={item.image}
                   alt={item.title}
                   className="w-full h-auto block object-contain transition-transform duration-1000 ease-out group-hover:scale-105"
+                  loading="lazy"
                 />
 
                 {/* Cinematic Glass Hover Overlay */}

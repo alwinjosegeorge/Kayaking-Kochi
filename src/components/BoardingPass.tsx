@@ -144,7 +144,7 @@ export default function BoardingPass() {
           
           {/* Logo and Brand */}
           <div className="flex flex-col items-center text-center gap-1.5">
-            <img src="/logo.png" alt="Hooked & Cooked Logo" className="w-16 h-16 object-contain mb-1.5 filter drop-shadow-[0_2px_8px_rgba(254,91,99,0.15)]" />
+            <img src="/logo.webp" alt="Hooked & Cooked Logo" className="w-16 h-16 object-contain mb-1.5 filter drop-shadow-[0_2px_8px_rgba(254,91,99,0.15)]" />
             <h1 className="font-extrabold text-lg tracking-tight text-[#0A0915]">Hooked & Cooked</h1>
             <span className="text-[9.5px] uppercase tracking-widest text-[#FE5B63] font-black">Security Verification Failed</span>
           </div>

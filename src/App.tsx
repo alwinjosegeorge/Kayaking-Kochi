@@ -1,22 +1,23 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, lazy, Suspense } from 'react';
 import Lenis from 'lenis';
 import { motion, AnimatePresence } from 'framer-motion';
 import QRCode from 'qrcode';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import PopularTours from './components/PopularTours';
-import Intro from './components/Intro';
-import VideoSection from './components/VideoSection';
-import BookingSection from './components/BookingSection';
-import GallerySection from './components/GallerySection';
-import PaddleTogether from './components/PaddleTogether';
-import Reviews from './components/Reviews';
-import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
-import ControlHub from './components/ControlHub';
-import BoardingPass from './components/BoardingPass';
 import type { Booking, ClosedSlot } from './types';
 import { generateSecurityToken } from './utils/security';
+
+const PopularTours = lazy(() => import('./components/PopularTours'));
+const Intro = lazy(() => import('./components/Intro'));
+const VideoSection = lazy(() => import('./components/VideoSection'));
+const BookingSection = lazy(() => import('./components/BookingSection'));
+const GallerySection = lazy(() => import('./components/GallerySection'));
+const PaddleTogether = lazy(() => import('./components/PaddleTogether'));
+const Reviews = lazy(() => import('./components/Reviews'));
+const Footer = lazy(() => import('./components/Footer'));
+const ControlHub = lazy(() => import('./components/ControlHub'));
+const BoardingPass = lazy(() => import('./components/BoardingPass'));
 
 
 // Helper to format today's date in YYYY-MM-DD format based on local time
@@ -583,7 +584,7 @@ function App() {
             
             <motion.img
               layoutId="logo-transition"
-              src="/logo.png"
+              src="/logo.webp"
               alt="Hooked & Cooked Logo"
               className="w-24 h-24 object-contain relative z-10"
               transition={{ type: "spring", stiffness: 120, damping: 18 }}
@@ -596,48 +597,54 @@ function App() {
       <div className="fixed inset-0 pointer-events-none z-40 bg-[linear-gradient(rgba(18,30,32,0)_98%,rgba(0,245,255,0.01)_98%)] bg-[size:100%_24px]" />
       
       {isControlHub ? (
-        <ControlHub 
-          bookings={bookings}
-          blockedDates={blockedDates}
-          closedSlots={closedSlots}
-          onAddBooking={addBooking}
-          onUpdateBooking={updateBooking}
-          onBlockDate={blockDate}
-          onUnblockDate={unblockDate}
-          onCloseSlot={closeSlot}
-          onReopenSlot={reopenSlot}
-          onConfirmCheckIn={confirmCheckIn}
-          onNavigate={(path) => {
-            window.history.pushState({}, '', path);
-            window.dispatchEvent(new PopStateEvent('popstate'));
-          }}
-        />
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center text-glacier-cyan font-mono text-xs tracking-widest animate-pulse bg-abyss-black">LOADING SYSTEM PORTAL...</div>}>
+          <ControlHub 
+            bookings={bookings}
+            blockedDates={blockedDates}
+            closedSlots={closedSlots}
+            onAddBooking={addBooking}
+            onUpdateBooking={updateBooking}
+            onBlockDate={blockDate}
+            onUnblockDate={unblockDate}
+            onCloseSlot={closeSlot}
+            onReopenSlot={reopenSlot}
+            onConfirmCheckIn={confirmCheckIn}
+            onNavigate={(path) => {
+              window.history.pushState({}, '', path);
+              window.dispatchEvent(new PopStateEvent('popstate'));
+            }}
+          />
+        </Suspense>
       ) : isBoardingPass ? (
         <div className="bg-[#FAF2F0] min-h-screen">
           <Navbar currentPath={currentPath} />
           <div className="pt-24 print:pt-0">
-            <BoardingPass />
+            <Suspense fallback={<div className="h-40 flex items-center justify-center text-[#FE5B63] font-mono text-xs tracking-widest animate-pulse">LOADING VERIFICATION...</div>}>
+              <BoardingPass />
+            </Suspense>
           </div>
         </div>
       ) : (
         <>
           <Navbar currentPath={currentPath} />
           <Hero />
-          <PopularTours />
-          <Intro />
-          <VideoSection />
-          
-          <BookingSection 
-            bookings={bookings}
-            blockedDates={blockedDates}
-            closedSlots={closedSlots}
-            onAddBooking={addBooking}
-          />
-          
-          <GallerySection />
-          <PaddleTogether />
-          <Reviews />
-          <Footer />
+          <Suspense fallback={<div className="h-48 flex items-center justify-center text-glacier-cyan font-mono text-xs tracking-widest animate-pulse">LOADING ADVENTURE...</div>}>
+            <PopularTours />
+            <Intro />
+            <VideoSection />
+            
+            <BookingSection 
+              bookings={bookings}
+              blockedDates={blockedDates}
+              closedSlots={closedSlots}
+              onAddBooking={addBooking}
+            />
+            
+            <GallerySection />
+            <PaddleTogether />
+            <Reviews />
+            <Footer />
+          </Suspense>
           <MobileBottomNav />
         </>
       )}
