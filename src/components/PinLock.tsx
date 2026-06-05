@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
-import { ShieldCheck, Delete } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { Lock, Delete, CheckCircle } from 'lucide-react';
 
 const CORRECT_PIN = '5555';
 const MAX_ATTEMPTS = 5;
@@ -18,22 +18,30 @@ export default function PinLock({ onUnlock }: PinLockProps) {
   const [attempts, setAttempts] = useState(0);
   const [lockedOut, setLockedOut] = useState(false);
   const [lockoutRemaining, setLockoutRemaining] = useState(0);
-  const [hint, setHint] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Check existing session
   useEffect(() => {
     const stored = sessionStorage.getItem(SESSION_KEY);
     if (stored) {
-      const { timestamp } = JSON.parse(stored);
-      if (Date.now() - timestamp < SESSION_DURATION_MS) {
-        onUnlock();
-      } else {
-        sessionStorage.removeItem(SESSION_KEY);
-      }
+      try {
+        const { timestamp } = JSON.parse(stored);
+        if (Date.now() - timestamp < SESSION_DURATION_MS) {
+          onUnlock();
+          return;
+        }
+      } catch { /* ignore */ }
+      sessionStorage.removeItem(SESSION_KEY);
     }
   }, [onUnlock]);
 
-  // Lockout timer
+  // Focus hidden input on mount for keyboard support
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  // Lockout countdown
   useEffect(() => {
     if (!lockedOut) return;
     const interval = setInterval(() => {
@@ -43,7 +51,7 @@ export default function PinLock({ onUnlock }: PinLockProps) {
           setLockedOut(false);
           setAttempts(0);
           setPin('');
-          setHint('');
+          setErrorMsg('');
           return 0;
         }
         return prev - 1;
@@ -52,192 +60,324 @@ export default function PinLock({ onUnlock }: PinLockProps) {
     return () => clearInterval(interval);
   }, [lockedOut]);
 
+  const submitPin = useCallback((currentPin: string) => {
+    if (currentPin === CORRECT_PIN) {
+      setStatus('success');
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({ timestamp: Date.now() }));
+      setTimeout(() => onUnlock(), 900);
+    } else {
+      const newAttempts = attempts + 1;
+      setAttempts(newAttempts);
+      setStatus('error');
+      setShake(true);
+      setTimeout(() => {
+        setShake(false);
+        setStatus('idle');
+        setPin('');
+        inputRef.current?.focus();
+      }, 600);
+
+      if (newAttempts >= MAX_ATTEMPTS) {
+        setLockedOut(true);
+        setLockoutRemaining(LOCKOUT_SECONDS);
+        setErrorMsg('');
+      } else {
+        const rem = MAX_ATTEMPTS - newAttempts;
+        setErrorMsg(`Incorrect PIN — ${rem} attempt${rem !== 1 ? 's' : ''} left`);
+      }
+    }
+  }, [attempts, onUnlock]);
+
   const handleDigit = useCallback((digit: string) => {
     if (lockedOut || status === 'success') return;
     if (pin.length >= 4) return;
     const newPin = pin + digit;
     setPin(newPin);
-    setHint('');
-
+    setErrorMsg('');
     if (newPin.length === 4) {
-      setTimeout(() => {
-        if (newPin === CORRECT_PIN) {
-          setStatus('success');
-          sessionStorage.setItem(SESSION_KEY, JSON.stringify({ timestamp: Date.now() }));
-          setTimeout(() => onUnlock(), 700);
-        } else {
-          const newAttempts = attempts + 1;
-          setAttempts(newAttempts);
-          setStatus('error');
-          setShake(true);
-          setTimeout(() => {
-            setShake(false);
-            setStatus('idle');
-            setPin('');
-          }, 600);
-
-          const remaining = MAX_ATTEMPTS - newAttempts;
-          if (newAttempts >= MAX_ATTEMPTS) {
-            setLockedOut(true);
-            setLockoutRemaining(LOCKOUT_SECONDS);
-            setHint('');
-          } else {
-            setHint(`Incorrect PIN. ${remaining} attempt${remaining !== 1 ? 's' : ''} remaining.`);
-          }
-        }
-      }, 80);
+      setTimeout(() => submitPin(newPin), 80);
     }
-  }, [pin, lockedOut, status, attempts, onUnlock]);
+  }, [pin, lockedOut, status, submitPin]);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (lockedOut || status === 'success') return;
     setPin(p => p.slice(0, -1));
-    setHint('');
+    setErrorMsg('');
+  }, [lockedOut, status]);
+
+  const handleUnlockClick = () => {
+    if (pin.length === 4) submitPin(pin);
+    else inputRef.current?.focus();
   };
 
-  // Keyboard support
+  // Physical keyboard support
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key >= '0' && e.key <= '9') handleDigit(e.key);
-      if (e.key === 'Backspace') handleDelete();
+      else if (e.key === 'Backspace') handleDelete();
+      else if (e.key === 'Enter' && pin.length === 4) submitPin(pin);
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [handleDigit]);
+  }, [handleDigit, handleDelete, pin, submitPin]);
 
-  const digits = ['1','2','3','4','5','6','7','8','9','','0','del'];
-
-  const dotColor = (i: number) => {
-    if (status === 'success') return 'bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.8)]';
-    if (status === 'error') return 'bg-rose-500 shadow-[0_0_10px_rgba(239,68,68,0.8)]';
-    return i < pin.length
-      ? 'bg-[#73E6D8] shadow-[0_0_10px_rgba(115,230,216,0.6)]'
-      : 'bg-white/10 border border-white/15';
+  // Dot visual states
+  const getDotStyle = (i: number) => {
+    const filled = i < pin.length;
+    if (status === 'success') return { bg: '#5BAD8F', border: '#5BAD8F', glow: '0 0 12px rgba(91,173,143,0.7)' };
+    if (status === 'error' && filled) return { bg: '#C0392B', border: '#C0392B', glow: '0 0 10px rgba(192,57,43,0.6)' };
+    if (filled) return { bg: '#B5903A', border: '#B5903A', glow: '0 0 10px rgba(181,144,58,0.5)' };
+    return { bg: 'transparent', border: '#C8B88A', glow: 'none' };
   };
 
+  const digits = ['1','2','3','4','5','6','7','8','9','','0','⌫'];
+
   return (
-    <div className="min-h-screen bg-[#091F27] flex flex-col items-center justify-center relative overflow-hidden select-none font-sans antialiased">
-      
-      {/* Ambient grain texture overlay */}
-      <div className="absolute inset-0 pointer-events-none opacity-30"
-        style={{ backgroundImage: 'url(/bg-grain.webp)', backgroundRepeat: 'repeat', backgroundSize: 'auto' }} />
-
-      {/* Radial glow behind card */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-[#73E6D8]/5 blur-[120px] pointer-events-none" />
-      <div className="absolute top-1/3 left-1/3 w-[300px] h-[300px] rounded-full bg-[#0D2B35]/80 blur-[80px] pointer-events-none" />
-
-      {/* Scanning line overlay */}
-      <div className="absolute inset-0 pointer-events-none z-10 bg-[linear-gradient(rgba(18,30,32,0)_98%,rgba(0,245,255,0.012)_98%)] bg-[size:100%_24px]" />
-
-      {/* Main Card */}
+    <div
+      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden select-none font-sans antialiased"
+      style={{ background: 'linear-gradient(135deg, #F5EDD8 0%, #EDE0C4 40%, #E8D8B8 100%)' }}
+    >
+      {/* Subtle noise texture */}
       <div
-        className={`relative z-20 w-full max-w-[360px] mx-4 transition-all duration-300 ${shake ? 'animate-[shake_0.4s_ease-in-out]' : ''}`}
-        style={{ animation: shake ? 'shake 0.4s ease-in-out' : undefined }}
+        className="absolute inset-0 pointer-events-none opacity-20"
+        style={{ backgroundImage: 'url(/bg-grain.webp)', backgroundRepeat: 'repeat', backgroundSize: 'auto' }}
+      />
+
+      {/* Warm glow blobs */}
+      <div className="absolute top-[-10%] right-[-10%] w-[50vw] h-[50vw] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(181,144,58,0.08) 0%, transparent 70%)' }} />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[40vw] h-[40vw] rounded-full pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(181,144,58,0.06) 0%, transparent 70%)' }} />
+
+      {/* Hidden input for mobile keyboard */}
+      <input
+        ref={inputRef}
+        type="tel"
+        inputMode="numeric"
+        maxLength={4}
+        value={pin}
+        onChange={e => {
+          const val = e.target.value.replace(/\D/g, '').slice(0, 4);
+          setPin(val);
+          setErrorMsg('');
+          if (val.length === 4) setTimeout(() => submitPin(val), 80);
+        }}
+        className="absolute opacity-0 pointer-events-none w-0 h-0"
+        tabIndex={-1}
+        aria-hidden="true"
+      />
+
+      {/* ── CARD ── */}
+      <div
+        className="relative z-10 w-full"
+        style={{
+          maxWidth: 480,
+          background: '#FDFAF3',
+          borderRadius: 28,
+          boxShadow: '0 24px 80px rgba(100,75,20,0.12), 0 4px 16px rgba(100,75,20,0.06)',
+          padding: '48px 40px 44px',
+          animation: shake ? 'hc-shake 0.45s ease-in-out' : undefined,
+        }}
       >
-        {/* Top branding */}
-        <div className="flex flex-col items-center mb-8 gap-3">
-          <div className="relative">
-            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)]">
-              <img src="/logo.webp" alt="Hooked & Cooked" className="w-10 h-10 object-contain" />
-            </div>
-            <div className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-[#0D2B35] border border-[#73E6D8]/30 flex items-center justify-center">
-              <ShieldCheck className="w-3 h-3 text-[#73E6D8]" />
-            </div>
+        {/* Lock icon circle */}
+        <div className="flex flex-col items-center gap-5 mb-8">
+          <div style={{
+            width: 80, height: 80, borderRadius: '50%',
+            background: '#F5EDD8',
+            border: '1.5px solid #C8B88A',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 20px rgba(181,144,58,0.15)',
+          }}>
+            {status === 'success' ? (
+              <CheckCircle style={{ width: 32, height: 32, color: '#5BAD8F' }} />
+            ) : (
+              <Lock style={{ width: 30, height: 30, color: '#B5903A' }} strokeWidth={1.8} />
+            )}
           </div>
-          <div className="text-center">
-            <h1 className="text-white font-black text-lg tracking-tight leading-tight">Control Hub</h1>
-            <p className="text-[#73E6D8]/60 text-[10px] font-bold uppercase tracking-[0.2em] mt-0.5">
-              Admin Access Portal
+
+          <div className="text-center space-y-1.5">
+            <p style={{ color: '#B5903A', fontSize: 10, fontWeight: 800, letterSpacing: '0.22em', textTransform: 'uppercase' }}>
+              Hooked &amp; Cooked
+            </p>
+            <h1 style={{
+              fontFamily: "'Georgia', 'Times New Roman', serif",
+              fontSize: 'clamp(28px, 6vw, 38px)',
+              fontWeight: 400,
+              color: '#1C1711',
+              lineHeight: 1.15,
+              letterSpacing: '-0.01em',
+            }}>
+              {lockedOut ? 'Access Locked' : 'Admin Access'}
+            </h1>
+            <p style={{ color: '#8A7B5E', fontSize: 10, fontWeight: 700, letterSpacing: '0.18em', textTransform: 'uppercase' }}>
+              {lockedOut
+                ? `Try again in ${lockoutRemaining}s`
+                : status === 'success'
+                ? 'Unlocking dashboard…'
+                : 'Authorized Personnel Only'}
             </p>
           </div>
         </div>
 
-        {/* PIN Card */}
-        <div className="bg-white/[0.04] border border-white/[0.08] rounded-3xl backdrop-blur-xl shadow-[0_32px_80px_rgba(0,0,0,0.5)] p-8 flex flex-col items-center gap-6">
+        {/* ── PIN Dots Row ── */}
+        <div
+          style={{
+            border: status === 'error' ? '1.5px solid #C0392B'
+              : status === 'success' ? '1.5px solid #5BAD8F'
+              : '1.5px solid #C8B88A',
+            borderRadius: 14,
+            padding: '18px 24px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 28,
+            background: '#FDFAF3',
+            transition: 'border-color 0.2s',
+            marginBottom: errorMsg || lockedOut ? 12 : 24,
+            cursor: 'text',
+          }}
+          onClick={() => inputRef.current?.focus()}
+        >
+          {[0, 1, 2, 3].map(i => {
+            const ds = getDotStyle(i);
+            return (
+              <div key={i} style={{
+                width: i < pin.length ? 14 : 10,
+                height: i < pin.length ? 14 : 10,
+                borderRadius: '50%',
+                background: ds.bg,
+                border: `1.5px solid ${ds.border}`,
+                boxShadow: ds.glow,
+                transition: 'all 0.18s ease',
+              }} />
+            );
+          })}
+        </div>
 
-          {/* Title */}
-          <div className="text-center">
-            <p className="text-white/50 text-xs font-semibold tracking-widest uppercase">
-              {lockedOut ? '⛔ Access Temporarily Locked' : 'Enter Admin PIN'}
-            </p>
-          </div>
-
-          {/* PIN Dots */}
-          <div className={`flex gap-4 items-center justify-center transition-all duration-200`}>
-            {[0, 1, 2, 3].map(i => (
-              <div
-                key={i}
-                className={`w-3.5 h-3.5 rounded-full transition-all duration-200 ${dotColor(i)}`}
-              />
-            ))}
-          </div>
-
-          {/* Lockout Message */}
-          {lockedOut && (
-            <div className="w-full bg-rose-500/10 border border-rose-500/20 rounded-2xl px-4 py-3 text-center">
-              <p className="text-rose-400 text-xs font-bold">Too many failed attempts</p>
-              <p className="text-rose-300/70 text-[10px] mt-0.5 font-medium">
-                Try again in <span className="font-black text-rose-300">{lockoutRemaining}s</span>
-              </p>
-            </div>
-          )}
-
-          {/* Hint */}
-          {hint && !lockedOut && (
-            <div className="w-full bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-2.5 text-center">
-              <p className="text-amber-400 text-[10.5px] font-semibold">{hint}</p>
-            </div>
-          )}
-
-          {/* Success flash */}
-          {status === 'success' && (
-            <div className="w-full bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-2.5 text-center">
-              <p className="text-emerald-400 text-[10.5px] font-bold tracking-wide">✓ Access Granted — Loading…</p>
-            </div>
-          )}
-
-          {/* Number Pad */}
-          <div className={`grid grid-cols-3 gap-3 w-full transition-opacity duration-300 ${lockedOut ? 'opacity-30 pointer-events-none' : 'opacity-100'}`}>
-            {digits.map((d, idx) => {
-              if (d === '') return <div key={idx} />;
-              
-              if (d === 'del') return (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={handleDelete}
-                  className="h-14 rounded-2xl bg-white/5 border border-white/8 hover:bg-white/10 hover:border-white/15 active:scale-95 transition-all duration-150 flex items-center justify-center cursor-pointer group"
-                >
-                  <Delete className="w-4 h-4 text-white/40 group-hover:text-white/70 transition-colors" />
-                </button>
-              );
-
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => handleDigit(d)}
-                  className="h-14 rounded-2xl bg-white/[0.06] border border-white/[0.08] hover:bg-[#73E6D8]/10 hover:border-[#73E6D8]/20 active:scale-95 active:bg-[#73E6D8]/20 transition-all duration-150 text-white font-black text-xl cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.2)] hover:shadow-[0_4px_16px_rgba(115,230,216,0.1)]"
-                >
-                  {d}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Footer hint */}
-          <p className="text-white/20 text-[9px] font-medium tracking-wider uppercase text-center">
-            Secured · Hooked & Cooked Admin
+        {/* Error / lockout message */}
+        {(errorMsg || lockedOut) && (
+          <p style={{
+            textAlign: 'center',
+            fontSize: 11,
+            fontWeight: 600,
+            color: lockedOut ? '#C0392B' : '#9B4C2E',
+            marginBottom: 20,
+            letterSpacing: '0.02em',
+          }}>
+            {lockedOut ? `⛔  Too many attempts — locked for ${lockoutRemaining}s` : errorMsg}
           </p>
+        )}
+
+        {/* ── Number Pad ── */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gap: 10,
+            marginBottom: 20,
+            opacity: lockedOut ? 0.35 : 1,
+            pointerEvents: lockedOut ? 'none' : 'auto',
+            transition: 'opacity 0.3s',
+          }}
+        >
+          {digits.map((d, idx) => {
+            if (d === '') return <div key={idx} />;
+            const isDel = d === '⌫';
+            return (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => isDel ? handleDelete() : handleDigit(d)}
+                style={{
+                  height: 58,
+                  borderRadius: 12,
+                  background: isDel ? 'transparent' : '#F5EDD8',
+                  border: isDel ? '1px solid transparent' : '1px solid #DDD0B3',
+                  color: isDel ? '#A09070' : '#1C1711',
+                  fontSize: isDel ? 18 : 22,
+                  fontWeight: isDel ? 400 : 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.13s ease',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  boxShadow: isDel ? 'none' : '0 1px 4px rgba(100,75,20,0.08)',
+                  fontFamily: isDel ? 'inherit' : 'inherit',
+                  WebkitTapHighlightColor: 'transparent',
+                }}
+                onMouseDown={e => {
+                  (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.94)';
+                  (e.currentTarget as HTMLButtonElement).style.background = isDel ? '#F5EDD8' : '#EDE0C4';
+                }}
+                onMouseUp={e => {
+                  (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
+                  (e.currentTarget as HTMLButtonElement).style.background = isDel ? 'transparent' : '#F5EDD8';
+                }}
+                onMouseLeave={e => {
+                  (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
+                  (e.currentTarget as HTMLButtonElement).style.background = isDel ? 'transparent' : '#F5EDD8';
+                }}
+                onTouchStart={e => {
+                  (e.currentTarget as HTMLButtonElement).style.transform = 'scale(0.94)';
+                  (e.currentTarget as HTMLButtonElement).style.background = '#EDE0C4';
+                }}
+                onTouchEnd={e => {
+                  (e.currentTarget as HTMLButtonElement).style.transform = 'scale(1)';
+                  (e.currentTarget as HTMLButtonElement).style.background = isDel ? 'transparent' : '#F5EDD8';
+                }}
+              >
+                {isDel ? <Delete style={{ width: 18, height: 18 }} /> : d}
+              </button>
+            );
+          })}
         </div>
+
+        {/* ── Unlock Button ── */}
+        <button
+          type="button"
+          onClick={handleUnlockClick}
+          disabled={lockedOut || status === 'success'}
+          style={{
+            width: '100%',
+            height: 56,
+            borderRadius: 14,
+            background: status === 'success' ? '#5BAD8F'
+              : lockedOut ? '#BDB09A'
+              : '#1C1711',
+            color: '#FDFAF3',
+            fontSize: 12,
+            fontWeight: 800,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            border: 'none',
+            cursor: lockedOut || status === 'success' ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease',
+            boxShadow: lockedOut ? 'none' : '0 6px 24px rgba(28,23,17,0.25)',
+          }}
+        >
+          {status === 'success' ? '✓ Access Granted' : lockedOut ? `Locked (${lockoutRemaining}s)` : 'Unlock Workspace'}
+        </button>
+
+        {/* Footer */}
+        <p style={{
+          textAlign: 'center',
+          fontSize: 9,
+          color: '#B0A48A',
+          fontWeight: 600,
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          marginTop: 20,
+        }}>
+          Secured Admin Portal · Session expires in 8h
+        </p>
       </div>
 
       {/* Shake keyframe */}
       <style>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          15% { transform: translateX(-8px); }
-          30% { transform: translateX(8px); }
+        @keyframes hc-shake {
+          0%, 100% { transform: translateX(0) rotate(0deg); }
+          15% { transform: translateX(-9px) rotate(-0.4deg); }
+          30% { transform: translateX(9px) rotate(0.4deg); }
           45% { transform: translateX(-6px); }
           60% { transform: translateX(6px); }
           75% { transform: translateX(-3px); }
