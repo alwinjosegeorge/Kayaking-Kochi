@@ -378,63 +378,10 @@ export default function BookingSection({
   };
 
   const handleDownload = () => {
-    const ticketElement = document.getElementById('success-ticket-card');
-    if (!ticketElement) return;
-
-    setDownloading(true);
-    // Wrap in setTimeout to allow React to finish state re-rendering before capturing DOM
-    setTimeout(() => {
-      import('html2canvas')
-        .then(({ default: html2canvas }) => {
-          html2canvas(ticketElement, {
-            scale: 3, // High quality resolution image
-            useCORS: true,
-            allowTaint: false,
-            backgroundColor: '#FFFFFF', // Keep the ticket background white
-            logging: false,
-            onclone: (clonedDoc) => {
-              const card = clonedDoc.getElementById('success-ticket-card');
-              if (card) {
-                card.style.transform = 'none';
-                card.style.opacity = '1';
-                
-                // Remove crossorigin attributes from base64 data URLs to prevent CORS blockages
-                const imgs = card.getElementsByTagName('img');
-                for (let i = 0; i < imgs.length; i++) {
-                  if (imgs[i].src && imgs[i].src.startsWith('data:')) {
-                    imgs[i].removeAttribute('crossorigin');
-                  }
-                }
-
-                let parent = card.parentElement;
-                while (parent) {
-                  parent.style.transform = 'none';
-                  parent.style.opacity = '1';
-                  parent = parent.parentElement;
-                }
-              }
-            }
-          }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const link = document.createElement('a');
-            link.href = imgData;
-            link.download = `Hooked_Cooked_Ticket_${createdBooking?.id}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            setDownloading(false);
-          }).catch(err => {
-            console.error('Error downloading ticket: ', err);
-            setDownloading(false);
-            // Fallback
-            window.print();
-          });
-        })
-        .catch(err => {
-          console.error('Failed to load html2canvas dynamically:', err);
-          setDownloading(false);
-        });
-    }, 150);
+    if (!createdBooking) return;
+    // Navigate to the boarding pass page (full-page, static, with its own working Download Pass button)
+    const boardingUrl = `/boarding-pass?id=${createdBooking.id}&token=${createdBooking.securityToken}&name=${encodeURIComponent(createdBooking.name)}&route=${createdBooking.route}&slot=${encodeURIComponent(createdBooking.slot)}&date=${createdBooking.date}&guests=${createdBooking.guests}&kayak=${createdBooking.kayakType}&amount=${createdBooking.amount}`;
+    window.open(boardingUrl, '_blank');
   };
 
   const handleShare = () => {
@@ -850,18 +797,10 @@ export default function BookingSection({
                       
                       <button
                         type="button"
-                        disabled={downloading}
                         onClick={handleDownload}
-                        className="bg-[#1E122A] text-white rounded-xl py-3 text-xs font-black tracking-widest uppercase hover:bg-[#2B1D38] active:scale-98 transition-all cursor-pointer shadow-md shadow-purple-950/15 disabled:bg-[#1E122A]/60 flex items-center justify-center gap-2"
+                        className="bg-[#1E122A] text-white rounded-xl py-3 text-xs font-black tracking-widest uppercase hover:bg-[#2B1D38] active:scale-98 transition-all cursor-pointer shadow-md shadow-purple-950/15 flex items-center justify-center gap-2"
                       >
-                        {downloading ? (
-                          <>
-                            <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                            <span>Saving...</span>
-                          </>
-                        ) : (
-                          <span>Download Pass</span>
-                        )}
+                        <span>Download Pass</span>
                       </button>
                     </div>
 
