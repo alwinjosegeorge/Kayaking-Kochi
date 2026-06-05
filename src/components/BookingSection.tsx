@@ -1578,7 +1578,6 @@ export default function BookingSection({
         <div 
           style={{
             marginTop: 48,
-            borderTop: '1px solid rgba(142, 138, 128, 0.25)',
             paddingTop: 32,
           }}
           className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6"

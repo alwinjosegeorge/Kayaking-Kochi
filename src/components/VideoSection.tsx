@@ -11,7 +11,7 @@ export default function VideoSection() {
     <section id="full-video" className="relative bg-abyss-black overflow-hidden select-none">
 
       {/* Full-Width Panoramic Cinematic Image / Video Placeholder */}
-      <div className="relative w-full aspect-[21/9] md:aspect-[24/9] overflow-hidden border-t border-glacier-cyan/15 group">
+      <div className="relative w-full aspect-[21/9] md:aspect-[24/9] overflow-hidden group">
         <div className="absolute inset-0 bg-gradient-to-b from-abyss-black via-abyss-black/25 to-transparent z-10" />
         <img
           src="/hero_bg.webp"
