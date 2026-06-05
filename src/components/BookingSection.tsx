@@ -472,6 +472,10 @@ export default function BookingSection({
       setSubStep(2);
       return;
     }
+    if (subStep !== 4) {
+      alert('Please complete all 4 steps to continue.');
+      return;
+    }
     
     // Enforce kayak-specific limits
     const { remainingGuests, remainingSingle, remainingDouble } = getSlotInventory(form.date, form.slot);
@@ -513,6 +517,19 @@ export default function BookingSection({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.name.trim()) {
+      alert('Please enter your Full Name.');
+      return;
+    }
+    if (!form.email.trim()) {
+      alert('Please enter your Email Address.');
+      return;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email.trim())) {
+      alert('Please enter a valid Email Address.');
+      return;
+    }
     const digits = form.phone.replace(/\D/g, '');
     if (digits.length < 10) {
       alert('Please enter a valid phone number with at least 10 digits.');
@@ -1327,10 +1344,11 @@ export default function BookingSection({
                               padding: '13px 18px', background: '#FFFFFF',
                               width: '100%', maxWidth: '240px',
                             }}>
-                              <button type="button"
-                                onClick={() => setForm(p => ({ ...p, guests: Math.max(1, p.guests - 1) }))}
+                               <button type="button"
+                                disabled={form.guests <= (form.kayakType === 'double' ? 2 : 1)}
+                                onClick={() => setForm(p => ({ ...p, guests: Math.max(form.kayakType === 'double' ? 2 : 1, p.guests - 1) }))}
                                 aria-label="Decrease guest count"
-                                style={{ background: 'none', border: 'none', fontSize: 22, color: gold, cursor: 'pointer', fontWeight: 600, lineHeight: 1, padding: 0 }}
+                                style={{ background: 'none', border: 'none', fontSize: 22, color: form.guests <= (form.kayakType === 'double' ? 2 : 1) ? '#C2BFB6' : gold, cursor: form.guests <= (form.kayakType === 'double' ? 2 : 1) ? 'not-allowed' : 'pointer', fontWeight: 600, lineHeight: 1, padding: 0 }}
                               >−</button>
                               <span style={{ fontSize: '14px', fontWeight: 700, color: ink }}>
                                 {form.guests} Guests
@@ -1393,24 +1411,26 @@ export default function BookingSection({
                   </AnimatePresence>
 
                   {/* Continue Button */}
-                  <div className="p-6">
-                    <button type="button" onClick={goToStep2}
-                      style={{
-                        background: ink, color: '#fff', border: 'none',
-                        width: '100%', padding: '18px',
-                        borderRadius: '14px',
-                        fontFamily: "'Outfit', sans-serif",
-                        fontSize: '13px', fontWeight: 700,
-                        letterSpacing: '3.5px', textTransform: 'uppercase',
-                        cursor: 'pointer',
-                        transition: 'opacity 0.2s, transform 0.1s',
-                      }}
-                      onMouseDown={e => e.currentTarget.style.transform = 'scale(0.99)'}
-                      onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
-                    >
-                      Continue Reservation
-                    </button>
-                  </div>
+                  {subStep === 4 && (
+                    <div className="p-6">
+                      <button type="button" onClick={goToStep2}
+                        style={{
+                          background: ink, color: '#fff', border: 'none',
+                          width: '100%', padding: '18px',
+                          borderRadius: '14px',
+                          fontFamily: "'Outfit', sans-serif",
+                          fontSize: '13px', fontWeight: 700,
+                          letterSpacing: '3.5px', textTransform: 'uppercase',
+                          cursor: 'pointer',
+                          transition: 'opacity 0.2s, transform 0.1s',
+                        }}
+                        onMouseDown={e => e.currentTarget.style.transform = 'scale(0.99)'}
+                        onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'}
+                      >
+                        Continue Reservation
+                      </button>
+                    </div>
+                  )}
 
                 </div>
               ) : (
@@ -1430,9 +1450,9 @@ export default function BookingSection({
                     ← Back to Options
                   </button>
 
-                  {fieldInput('name',  'Full Name',     'text',  'Your name')}
-                  {fieldInput('email', 'Email Address', 'email', 'your@email.com')}
-                   {fieldInput('phone', 'Phone Number',  'tel',   'Enter your number')}
+                   {fieldInput('name',  'Full Name *',     'text',  'Your name')}
+                  {fieldInput('email', 'Email Address *', 'email', 'your@email.com')}
+                  {fieldInput('phone', 'Phone Number *',  'tel',   'Enter your number')}
 
                   <button type="submit" disabled={paying} style={{
                     background: paying ? '#8A8A80' : ink, color: '#fff', border: 'none',
