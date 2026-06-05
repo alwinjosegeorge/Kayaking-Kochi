@@ -185,3 +185,23 @@ html.lenis, html.lenis body {
   animation: scale-up 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
+/* Scrollbar hiding utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (min-width: 1024px) {
+  .lg\:no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .lg\:no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+

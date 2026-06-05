@@ -1581,7 +1581,7 @@ export default function ControlHub({
 
                 {/* Inspect Details panel (Desktop view) */}
                 {selectedBookingId && selectedBooking && (
-                  <div className="hidden lg:block sticky top-24 max-h-[calc(100vh-120px)] w-auto bg-white rounded-3xl border border-gray-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6 space-y-6 self-start relative overflow-y-auto">
+                  <div className="hidden lg:block sticky top-24 max-h-[calc(100vh-120px)] w-auto bg-white rounded-3xl border border-gray-200/50 shadow-[0_8px_30px_rgba(0,0,0,0.02)] p-6 space-y-6 self-start relative overflow-y-auto lg:no-scrollbar">
                     {renderDetailsContent()}
                   </div>
                 )}
