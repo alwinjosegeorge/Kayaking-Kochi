@@ -2416,7 +2416,7 @@ export default function ControlHub({
                     required
                     value={bookingForm.phone}
                     onChange={(e) => setBookingForm(prev => ({ ...prev, phone: e.target.value }))}
-                    placeholder="+91 94470 12345"
+                    placeholder="94470 12345"
                     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                   />
                 </div>
@@ -2730,7 +2730,7 @@ export default function ControlHub({
                   required
                   value={customerForm.phone}
                   onChange={(e) => setCustomerForm(prev => ({ ...prev, phone: e.target.value }))}
-                  placeholder="+91 98765 43210"
+                  placeholder="98765 43210"
                   className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:outline-none focus:border-[#0D2B35]"
                 />
               </div>

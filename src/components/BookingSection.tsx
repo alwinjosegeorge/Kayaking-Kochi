@@ -1468,7 +1468,7 @@ export default function BookingSection({
 
                   {fieldInput('name',  'Full Name',     'text',  'Your name')}
                   {fieldInput('email', 'Email Address', 'email', 'your@email.com')}
-                  {fieldInput('phone', 'Phone Number',  'tel',   '+91 98765 43210')}
+                   {fieldInput('phone', 'Phone Number',  'tel',   '98765 43210')}
 
                   <button type="submit" disabled={paying} style={{
                     background: paying ? '#8A8A80' : ink, color: '#fff', border: 'none',
