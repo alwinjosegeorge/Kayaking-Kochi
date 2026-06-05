@@ -187,10 +187,9 @@ export default function BookingSection({
   };
 
   const getSlotAvailability = (dateStr: string, slotTime: string) => {
-    // Sum up actual real bookings for this date and slot on the selected route
-    const activeRoute = form.route || 'kadambrayar';
+    // Sum up actual real bookings for this date and slot across all routes
     const realBookingsCount = bookings
-      .filter(b => b.date === dateStr && b.slot === slotTime && b.route === activeRoute && b.status !== 'Cancelled')
+      .filter(b => b.date === dateStr && b.slot === slotTime && b.status !== 'Cancelled')
       .reduce((sum, b) => sum + b.guests, 0);
 
     const booked = realBookingsCount;
@@ -357,6 +356,11 @@ export default function BookingSection({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const digits = form.phone.replace(/\D/g, '');
+    if (digits.length < 10) {
+      alert('Please enter a valid phone number with at least 10 digits.');
+      return;
+    }
     handleRazorpayPayment();
   };
 

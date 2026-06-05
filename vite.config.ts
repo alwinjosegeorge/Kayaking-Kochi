@@ -7,8 +7,6 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
     watch: {
-      // Prevent @tailwindcss/vite from triggering an infinite restart loop
-      // by excluding the config file itself from being watched
       ignored: ['**/vite.config.*'],
     },
     proxy: {
@@ -20,12 +18,16 @@ export default defineConfig({
     }
   },
   build: {
+    target: 'es2020',
     cssCodeSplit: true,
     chunkSizeWarningLimit: 600,
+    minify: 'esbuild',
     rollupOptions: {
       output: {
-        // Let Vite/Rollup code-split node_modules naturally to avoid bundling heavy libs into the main chunk
+        // Natural Rollup code-splitting — lazy imports create their own async chunks automatically
       }
     }
   }
 })
+
+

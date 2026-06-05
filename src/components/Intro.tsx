@@ -1,6 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
+// Detect mobile once at module level for animation optimisation
+const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+
 const WhaleTailSVG = () => (
   <svg 
     className="w-20 h-20 text-glacier-cyan relative z-10 transition-transform duration-500 hover:scale-110"
@@ -46,8 +49,8 @@ export default function Intro() {
         
         {/* Centered Whale Tail icon */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
+          initial={isMobileDevice ? false : { opacity: 0, scale: 0.8 }}
+          whileInView={isMobileDevice ? undefined : { opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.8 }}
           className="flex justify-center mb-6"
@@ -59,8 +62,8 @@ export default function Intro() {
 
         {/* Headline */}
         <motion.h2
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={isMobileDevice ? false : { opacity: 0, y: 30 }}
+          whileInView={isMobileDevice ? undefined : { opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 1.2 }}
           className="text-4xl md:text-6xl lg:text-7xl font-black tracking-wide text-white uppercase max-w-5xl mx-auto leading-none mb-16 md:mb-32 font-sans"
@@ -77,8 +80,8 @@ export default function Intro() {
           {cards.map((card, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 25 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={isMobileDevice ? false : { opacity: 0, y: 25 }}
+              whileInView={isMobileDevice ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.8, delay: idx * 0.1 }}
               className="flex flex-col items-start"

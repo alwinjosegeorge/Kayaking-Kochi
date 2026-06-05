@@ -3,21 +3,23 @@ import Lenis from 'lenis';
 import { motion, AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
-import MobileBottomNav from './components/MobileBottomNav';
+import PinLock from './components/PinLock';
 import type { Booking, ClosedSlot } from './types';
 import { generateSecurityToken } from './utils/security';
 
-import PopularTours from './components/PopularTours';
-import Intro from './components/Intro';
-import VideoSection from './components/VideoSection';
-import BookingSection from './components/BookingSection';
-import GallerySection from './components/GallerySection';
-import PaddleTogether from './components/PaddleTogether';
-import Reviews from './components/Reviews';
-import Footer from './components/Footer';
-const ControlHub = lazy(() => import('./components/ControlHub'));
-const BoardingPass = lazy(() => import('./components/BoardingPass'));
-import PinLock from './components/PinLock';
+// Lazy-load ALL below-fold sections to keep main bundle lean
+const MobileBottomNav = lazy(() => import('./components/MobileBottomNav'));
+const PopularTours   = lazy(() => import('./components/PopularTours'));
+const Intro          = lazy(() => import('./components/Intro'));
+const VideoSection   = lazy(() => import('./components/VideoSection'));
+const BookingSection = lazy(() => import('./components/BookingSection'));
+const GallerySection = lazy(() => import('./components/GallerySection'));
+const PaddleTogether = lazy(() => import('./components/PaddleTogether'));
+const Reviews        = lazy(() => import('./components/Reviews'));
+const Footer         = lazy(() => import('./components/Footer'));
+const ControlHub     = lazy(() => import('./components/ControlHub'));
+const BoardingPass   = lazy(() => import('./components/BoardingPass'));
+
 
 
 
@@ -296,31 +298,39 @@ function App() {
     };
     document.addEventListener('click', handleLinkClick);
 
-    // 3. Lenis Kinetic Smooth Scrolling
-    const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => 1 - Math.pow(1 - t, 5),
-      orientation: 'vertical',
-      gestureOrientation: 'vertical',
-      smoothWheel: true,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 2.0,
-    });
-    (window as any).lenis = lenis;
+    // 3. Lenis Kinetic Smooth Scrolling — desktop only (mobile native scroll is faster)
+    const isMobile = /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.innerWidth < 768;
+    let lenis: any = null;
 
-    function raf(time: number) {
-      lenis.raf(time);
+    if (!isMobile) {
+      lenis = new Lenis({
+        duration: 1.1,
+        easing: (t) => 1 - Math.pow(1 - t, 5),
+        orientation: 'vertical',
+        gestureOrientation: 'vertical',
+        smoothWheel: true,
+        wheelMultiplier: 1.0,
+        touchMultiplier: 2.0,
+      });
+      (window as any).lenis = lenis;
+
+      function raf(time: number) {
+        lenis!.raf(time);
+        requestAnimationFrame(raf);
+      }
       requestAnimationFrame(raf);
     }
-    requestAnimationFrame(raf);
 
     return () => {
-      lenis.destroy();
-      delete (window as any).lenis;
+      if (lenis) {
+        lenis.destroy();
+        delete (window as any).lenis;
+      }
       window.removeEventListener('popstate', handleLocationChange);
       document.removeEventListener('click', handleLinkClick);
     };
   }, []);
+
 
   // State manipulation methods
   const addBooking = async (bookingData: Omit<Booking, 'id' | 'createdAt' | 'securityToken'>) => {
@@ -631,27 +641,26 @@ function App() {
       ) : (
         <>
           <Navbar currentPath={currentPath} />
-          <Suspense fallback={<div className="h-48 flex items-center justify-center text-glacier-cyan font-mono text-xs tracking-widest animate-pulse">LOADING ADVENTURE...</div>}>
-            <main>
-              <Hero />
-              <PopularTours />
-              <Intro />
-              <VideoSection />
-              
+          <main>
+            {/* Hero loads instantly — no lazy, no Suspense needed */}
+            <Hero />
+            <Suspense fallback={null}><PopularTours /></Suspense>
+            <Suspense fallback={null}><Intro /></Suspense>
+            <Suspense fallback={null}><VideoSection /></Suspense>
+            <Suspense fallback={null}>
               <BookingSection 
                 bookings={bookings}
                 blockedDates={blockedDates}
                 closedSlots={closedSlots}
                 onAddBooking={addBooking}
               />
-              
-              <GallerySection />
-              <PaddleTogether />
-              <Reviews />
-            </main>
-            <Footer />
-          </Suspense>
-          <MobileBottomNav />
+            </Suspense>
+            <Suspense fallback={null}><GallerySection /></Suspense>
+            <Suspense fallback={null}><PaddleTogether /></Suspense>
+            <Suspense fallback={null}><Reviews /></Suspense>
+          </main>
+          <Suspense fallback={null}><Footer /></Suspense>
+          <Suspense fallback={null}><MobileBottomNav /></Suspense>
         </>
       )}
 

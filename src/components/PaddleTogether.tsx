@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X } from 'lucide-react';
 
+const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+
 const HandDrawnLine = ({ className = "", style = {} }: { className?: string, style?: React.CSSProperties }) => (
   <svg
     viewBox="0 0 1200 20"
@@ -42,8 +44,8 @@ export default function PaddleTogether() {
 
             {/* Left Side: Family Kayaking image with floating transparent pill */}
             <motion.div
-              initial={{ opacity: 0, x: -40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={isMobileDevice ? false : { opacity: 0, x: -40 }}
+              whileInView={isMobileDevice ? undefined : { opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 1, ease: 'easeOut' }}
               className="lg:col-span-6 relative rounded-3xl overflow-hidden shadow-[0_15px_40px_rgba(7,25,29,0.10)] group aspect-[4/3] sm:aspect-[16/10] lg:aspect-auto lg:h-[400px] border border-[#e8e2da]"
@@ -72,8 +74,8 @@ export default function PaddleTogether() {
 
             {/* Right Side: High-Contrast Editorial Content Layout */}
             <motion.div
-              initial={{ opacity: 0, x: 40 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={isMobileDevice ? false : { opacity: 0, x: 40 }}
+              whileInView={isMobileDevice ? undefined : { opacity: 1, x: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 1, ease: 'easeOut' }}
               className="lg:col-span-6 text-left flex flex-col justify-center items-start space-y-4 md:space-y-6"

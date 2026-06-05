@@ -93,11 +93,8 @@ export default function MobileBottomNav() {
       const windowHeight = window.innerHeight;
 
       // Hide navigation bar when close to the bottom (footer view)
-      if (scrollY + windowHeight >= docHeight - 120) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
+      const shouldBeVisible = scrollY + windowHeight < docHeight - 120;
+      setIsVisible(prev => (prev !== shouldBeVisible ? shouldBeVisible : prev));
 
       // Don't override user selection if they clicked recently
       if (Date.now() - lastClickTime.current < 2000) return;
@@ -105,14 +102,17 @@ export default function MobileBottomNav() {
       const bookingEl = document.getElementById('booking-section');
       if (bookingEl) {
         const rect = bookingEl.getBoundingClientRect();
-        if (rect.top < window.innerHeight * 0.6) {
-          setActiveTab('book');
-        } else {
-          setActiveTab('home');
-        }
+        const nextTab = rect.top < window.innerHeight * 0.6 ? 'book' : 'home';
+        setActiveTab(prev => {
+          if (prev !== nextTab && prev !== 'whatsapp') return nextTab;
+          return prev;
+        });
       } else {
         if (scrollY < 250) {
-          setActiveTab('home');
+          setActiveTab(prev => {
+            if (prev !== 'home' && prev !== 'whatsapp') return 'home';
+            return prev;
+          });
         }
       }
     };

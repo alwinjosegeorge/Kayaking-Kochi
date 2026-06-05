@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, PhoneCall } from 'lucide-react';
 
@@ -22,7 +22,7 @@ interface NavbarProps {
 export default function Navbar({ currentPath = '/' }: NavbarProps) {
   const [scrolled, setScrolled] = useState(false);
   const [visible, setVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  const lastScrollY = useRef(0);
   const [activeSection, setActiveSection] = useState('Home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -67,21 +67,24 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
       const currentScrollY = window.scrollY;
 
       // Capsule styling trigger
-      setScrolled(currentScrollY > 50);
+      const shouldScroll = currentScrollY > 50;
+      setScrolled(prev => (prev !== shouldScroll ? shouldScroll : prev));
+
+      const lastY = lastScrollY.current;
 
       // Hide on scroll down, show on scroll up
       if (currentScrollY <= 50) {
-        setVisible(true);
+        setVisible(prev => (prev !== true ? true : prev));
       } else if (window.innerWidth < 1024) {
         // On mobile, once scrolled past 50px, keep it hidden completely until scrolled back to top
-        setVisible(false);
-      } else if (currentScrollY > lastScrollY) {
-        setVisible(false); // Scrolling down
+        setVisible(prev => (prev !== false ? false : prev));
+      } else if (currentScrollY > lastY) {
+        setVisible(prev => (prev !== false ? false : prev));
       } else {
-        setVisible(true); // Scrolling up
+        setVisible(prev => (prev !== true ? true : prev));
       }
 
-      setLastScrollY(currentScrollY);
+      lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -117,7 +120,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
       window.removeEventListener('scroll', handleScroll);
       observer.disconnect();
     };
-  }, [lastScrollY, mobileMenuOpen]);
+  }, [mobileMenuOpen]);
 
   // Determine theme mode (dark vs light sand)
   const isDarkTheme = isHome;
@@ -129,11 +132,9 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
   if (isHome) {
     if (scrolled) {
       navStyle = {
-        backgroundImage: "url('/bg-grain.webp')",
         backgroundColor: 'rgba(9, 31, 39, 0.75)',
-        backgroundRepeat: 'repeat',
       };
-      navClass = 'w-full px-5 sm:px-10 py-3.5 mt-0 rounded-none border-b border-cream/10 backdrop-blur-2xl';
+      navClass = 'w-full px-5 sm:px-10 py-3.5 mt-0 rounded-none border-b border-cream/10 backdrop-blur-2xl bg-nav-grain';
     } else {
       navStyle = {};
       navClass = 'w-full max-w-7xl px-5 sm:px-10 py-4 sm:py-6 mt-0 rounded-none border-transparent bg-transparent backdrop-blur-none';
@@ -141,11 +142,9 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
   } else {
     // Other pages: always full-width sand
     navStyle = {
-      backgroundImage: "url('/bg-grain.webp')",
       backgroundColor: '#F4EBDB',
-      backgroundRepeat: 'repeat',
     };
-    navClass = 'w-full px-5 sm:px-10 py-4 mt-0 rounded-none border-b border-[#091F27]/12';
+    navClass = 'w-full px-5 sm:px-10 py-4 mt-0 rounded-none border-b border-[#091F27]/12 bg-nav-grain';
   }
 
   return (

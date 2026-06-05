@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play, X } from 'lucide-react';
 
+const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+
 export default function VideoSection() {
   const [showVideoModal, setShowVideoModal] = useState(false);
 
@@ -24,8 +26,8 @@ export default function VideoSection() {
         <div className="absolute inset-0 flex flex-col justify-center items-center z-20 px-6">
           <motion.button
             onClick={() => setShowVideoModal(true)}
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={isMobileDevice ? false : { opacity: 0, scale: 0.9 }}
+            whileInView={isMobileDevice ? undefined : { opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
             className="flex items-center gap-3 border border-white hover:bg-white hover:text-black rounded-full px-8 py-4 bg-abyss-black/35 backdrop-blur-md text-white text-xs font-mono tracking-[0.25em] uppercase hover:scale-105 transition-all duration-300 shadow-2xl group cursor-pointer"

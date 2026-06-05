@@ -280,6 +280,11 @@ export default function ControlHub({
   // Handle forms submissions
   const handleAddBooking = (e: React.FormEvent) => {
     e.preventDefault();
+    const digits = bookingForm.phone.replace(/\D/g, '');
+    if (digits.length < 10) {
+      alert('Please enter a valid phone number with at least 10 digits.');
+      return;
+    }
     const data = {
       date: bookingForm.date,
       route: bookingForm.route,
@@ -333,6 +338,11 @@ export default function ControlHub({
 
   const handleAddCustomer = (e: React.FormEvent) => {
     e.preventDefault();
+    const digits = customerForm.phone.replace(/\D/g, '');
+    if (digits.length < 10) {
+      alert('Please enter a valid phone number with at least 10 digits.');
+      return;
+    }
     const newCustomer: Customer = {
       name: customerForm.name,
       email: customerForm.email || 'N/A',

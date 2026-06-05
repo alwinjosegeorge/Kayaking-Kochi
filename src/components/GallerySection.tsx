@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, Maximize2, X } from 'lucide-react';
 
+const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+
 interface GalleryItem {
   id: number;
   category: 'mangroves' | 'sunsets' | 'guests' | 'expeditions';
@@ -137,18 +139,18 @@ export default function GallerySection() {
         </div>
         {/* True CSS Columns Masonry (Zero Image Cropping) */}
         <motion.div 
-          layout 
+          layout={isMobileDevice ? false : true} 
           className="columns-2 lg:columns-3 xl:columns-4 gap-4 sm:gap-6 max-w-6xl mx-auto [column-fill:_balance]"
         >
-          <AnimatePresence mode="popLayout">
+          <AnimatePresence mode={isMobileDevice ? "wait" : "popLayout"}>
             {filteredItems.map((item) => (
               <motion.div
                 key={item.id}
-                layout
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.5 }}
+                layout={isMobileDevice ? false : true}
+                initial={isMobileDevice ? false : { opacity: 0, scale: 0.9 }}
+                animate={isMobileDevice ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+                exit={isMobileDevice ? { opacity: 0 } : { opacity: 0, scale: 0.9 }}
+                transition={isMobileDevice ? { duration: 0.2 } : { duration: 0.5 }}
                 className="break-inside-avoid mb-4 sm:mb-6 relative overflow-hidden rounded-[16px] sm:rounded-[24px] border border-[#e2ecee] bg-white group hover:shadow-[0_15px_40px_rgba(7,25,29,0.06)] hover:translate-y-[-4px] transition-all duration-500 cursor-pointer"
                 onClick={() => setSelectedImage(item)}
               >
@@ -160,6 +162,7 @@ export default function GallerySection() {
                   height={item.height}
                   className="w-full h-auto block object-contain transition-transform duration-1000 ease-out group-hover:scale-105"
                   loading="lazy"
+                  decoding="async"
                 />
 
                 {/* Cinematic Glass Hover Overlay */}

@@ -19,8 +19,7 @@ export default function Hero() {
   return (
     <header id="hero" className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-abyss-black select-none">
       
-      {/* Background Video of Kochi tropical waterways */}
-      {/* Mobile-optimized portrait video */}
+      {/* Background Video — Mobile: portrait, autoplay, high priority */}
       <video
         src="/phone_home_page.mp4"
         poster="/hero_bg.webp"
@@ -31,14 +30,14 @@ export default function Hero() {
         preload="auto"
         className="absolute inset-0 w-full h-full object-cover object-center z-0 opacity-95 block md:hidden transform-gpu will-change-transform"
       />
-      {/* Desktop-optimized landscape video */}
+      {/* Background Video — Desktop: landscape, defer load until mobile video done */}
       <video
         src="/IMG_8598.mp4"
         autoPlay
         loop
         muted
         playsInline
-        preload="auto"
+        preload="none"
         className="absolute inset-0 w-full h-full object-cover object-center z-0 opacity-95 hidden md:block transform-gpu will-change-transform"
       />
       {/* Dark overlay matching the moody cinematic Scandinavian travel vibe */}

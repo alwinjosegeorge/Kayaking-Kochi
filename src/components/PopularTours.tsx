@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+// Detect mobile once at module level for animation optimisation
+const isMobileDevice = typeof window !== 'undefined' && (window.innerWidth < 768 || /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent));
+
+
 const popularTours = [
   {
     title: "Kadambrayar River & Mangrove Day Tour",
@@ -81,8 +85,8 @@ export default function PopularTours() {
           {popularTours.map((tour, idx) => (
             <motion.div
               key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={isMobileDevice ? false : { opacity: 0, y: 20 }}
+              whileInView={isMobileDevice ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.8, delay: idx * 0.1 }}
               onClick={handleCardClick}
