@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -38,7 +38,7 @@ const popularTours = [
 ];
 
 export default function PopularTours() {
-  const [sliderIndex, setSliderIndex] = useState(0);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -53,12 +53,19 @@ export default function PopularTours() {
     }
   };
 
-  const handlePrev = () => {
-    setSliderIndex(prev => (prev === 0 ? popularTours.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setSliderIndex(prev => (prev === popularTours.length - 1 ? 0 : prev + 1));
+  const scroll = (direction: 'left' | 'right') => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollAmount = container.clientWidth * 0.85;
+      const targetScrollLeft = direction === 'left' 
+        ? container.scrollLeft - scrollAmount 
+        : container.scrollLeft + scrollAmount;
+        
+      container.scrollTo({
+        left: targetScrollLeft,
+        behavior: 'smooth'
+      });
+    }
   };
 
   return (
@@ -80,8 +87,11 @@ export default function PopularTours() {
           </h2>
         </div>
 
-        {/* Borderless Cards Grid matching the screenshot exactly */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-start">
+        {/* Horizontal Scroll Carousel on Mobile/Tablet, Grid on Desktop */}
+        <div 
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto lg:grid lg:grid-cols-4 gap-6 md:gap-8 pb-6 lg:pb-0 snap-x snap-mandatory no-scrollbar scroll-smooth"
+        >
           {popularTours.map((tour, idx) => (
             <motion.div
               key={idx}
@@ -90,7 +100,7 @@ export default function PopularTours() {
               viewport={{ once: true, margin: "-50px" }}
               transition={{ duration: 0.8, delay: idx * 0.1 }}
               onClick={handleCardClick}
-              className="flex flex-col space-y-6 text-left group hover:translate-y-[-6px] transition-all duration-500 relative z-10 cursor-pointer"
+              className="flex flex-col space-y-6 text-left group hover:translate-y-[-6px] transition-all duration-500 relative z-10 cursor-pointer w-[285px] sm:w-[320px] shrink-0 snap-start lg:w-auto lg:shrink"
             >
               {/* Image Frame with rounded corners */}
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[20px] border border-transparent group-hover:border-glacier-cyan/25 group-hover:shadow-[0_15px_40px_rgba(0,245,255,0.06)] transition-all duration-500">
@@ -137,16 +147,16 @@ export default function PopularTours() {
         </div>
 
         {/* Circular outline navigation buttons at bottom-left */}
-        <div className="flex items-center space-x-4 mt-10 md:mt-16 pt-4">
+        <div className="flex items-center space-x-4 mt-8 pt-2 lg:hidden">
           <button 
-            onClick={handlePrev}
+            onClick={() => scroll('left')}
             aria-label="Previous tour"
             className="w-10 h-10 rounded-full border border-white/30 hover:border-white text-white flex items-center justify-center transition-colors cursor-pointer"
           >
             <ChevronLeft size={18} />
           </button>
           <button 
-            onClick={handleNext}
+            onClick={() => scroll('right')}
             aria-label="Next tour"
             className="w-10 h-10 rounded-full border border-white/30 hover:border-white text-white flex items-center justify-center transition-colors cursor-pointer"
           >
