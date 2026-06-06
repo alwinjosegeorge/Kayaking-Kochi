@@ -129,7 +129,7 @@ export default function PaddleTogether() {
             >
               <iframe
                 className="w-full h-full"
-                src="https://www.youtube.com/embed/tyMVgHzfky8?autoplay=1&mute=0&start=7"
+                src="https://www.youtube.com/embed/EwsZtNDC_h4?autoplay=1&mute=0"
                 title="Cinematic Kerala Travel Video"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
