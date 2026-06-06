@@ -49,9 +49,9 @@ export default function Intro() {
         
         {/* Centered Whale Tail icon */}
         <motion.div
-          initial={isMobileDevice ? false : { opacity: 0, scale: 0.8 }}
-          whileInView={isMobileDevice ? undefined : { opacity: 1, scale: 1 }}
-          viewport={{ once: true, margin: "-100px" }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, margin: isMobileDevice ? "-30px" : "-100px" }}
           transition={{ duration: 0.8 }}
           className="flex justify-center mb-6"
         >
@@ -62,10 +62,10 @@ export default function Intro() {
 
         {/* Headline */}
         <motion.h2
-          initial={isMobileDevice ? false : { opacity: 0, y: 30 }}
-          whileInView={isMobileDevice ? undefined : { opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 1.2 }}
+          initial={{ opacity: 0, y: isMobileDevice ? 20 : 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: isMobileDevice ? "-30px" : "-100px" }}
+          transition={{ duration: 1.0 }}
           className="text-4xl md:text-6xl lg:text-7xl font-black tracking-wide text-white uppercase max-w-5xl mx-auto leading-none mb-16 md:mb-32 font-sans"
         >
           Kayak Kerala Through <br />
@@ -80,10 +80,10 @@ export default function Intro() {
           {cards.map((card, idx) => (
             <motion.div
               key={idx}
-              initial={isMobileDevice ? false : { opacity: 0, y: 25 }}
-              whileInView={isMobileDevice ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.8, delay: idx * 0.1 }}
+              initial={{ opacity: 0, y: isMobileDevice ? 15 : 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-30px" }}
+              transition={{ duration: 0.8, delay: isMobileDevice ? (idx % 2) * 0.1 : idx * 0.1 }}
               className="flex flex-col items-start"
             >
               {/* Illustration Icon */}

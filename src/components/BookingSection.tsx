@@ -1584,6 +1584,7 @@ export default function BookingSection({
           className="flex flex-wrap items-center justify-center gap-x-12 gap-y-6"
         >
           {[
+            { label: 'Free Photos', icon: '✓' },
             { label: 'Certified Guides', icon: '✓' },
             { label: 'Premium Imported Kayaks', icon: '✓' },
             { label: 'Life Jackets Included', icon: '✓' },
