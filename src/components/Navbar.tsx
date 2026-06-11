@@ -317,18 +317,12 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              style={isDarkTheme ? {
+              style={{
                 backgroundImage: "url('/bg-grain.webp')",
                 backgroundColor: '#091F27',
                 backgroundRepeat: 'repeat',
-              } : {
-                backgroundImage: "url('/bg-grain.webp')",
-                backgroundColor: '#F4EBDB',
-                backgroundRepeat: 'repeat',
               }}
-              className={`w-full overflow-hidden flex flex-col pt-4 pb-2 space-y-2 border-t mt-3 lg:hidden rounded-2xl p-4 shadow-xl ${
-                isDarkTheme ? 'border-cream/10' : 'border-[#091F27]/10'
-              }`}
+              className="w-full overflow-hidden flex flex-col pt-4 pb-2 space-y-2 border-t mt-3 lg:hidden rounded-2xl p-4 shadow-xl border-cream/10"
             >
               {navLinks.map((link, idx) => {
                 const isActive = activeSection === link.name;
@@ -339,19 +333,19 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
                     onClick={(e) => handleLinkClick(e, link.href)}
                     className={`px-5 py-3 rounded-2xl text-[10px] font-mono tracking-[0.25em] uppercase transition-all flex items-center justify-between ${
                       isActive 
-                        ? (isDarkTheme ? 'bg-glacier-cyan text-[#091F27] font-bold shadow-md' : 'bg-[#091F27] text-[#F4EBDB] font-bold shadow-md') 
-                        : (isDarkTheme ? 'text-gray-400 hover:bg-cream/5 hover:text-cream' : 'text-[#091F27]/85 hover:bg-[#091F27]/5')
+                        ? 'bg-glacier-cyan text-[#091F27] font-bold shadow-md' 
+                        : 'text-gray-400 hover:bg-cream/5 hover:text-cream'
                     }`}
                   >
                     <span>{link.name}</span>
                     {isActive && (
-                      <span className={`w-1.5 h-1.5 rounded-full ${isDarkTheme ? 'bg-[#091F27]' : 'bg-[#F4EBDB]'}`} />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#091F27]" />
                     )}
                   </a>
                 );
               })}
 
-              <div className={`h-[1px] w-full my-2 ${isDarkTheme ? 'bg-cream/10' : 'bg-[#091F27]/10'}`} />
+              <div className="h-[1px] w-full my-2 bg-cream/10" />
 
               <div className="flex justify-between items-center px-4 py-2">
                 <div className="flex space-x-3">
@@ -360,9 +354,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
                     target="_blank" 
                     rel="noreferrer" 
                     aria-label="Visit our YouTube channel"
-                    className={`p-1.5 rounded-full ${
-                      isDarkTheme ? 'text-gray-400 hover:text-glacier-cyan hover:bg-cream/5' : 'text-[#091F27] hover:bg-[#091F27]/5'
-                    }`}
+                    className="p-1.5 rounded-full text-gray-400 hover:text-glacier-cyan hover:bg-cream/5"
                   >
                     <YoutubeIcon />
                   </a>
@@ -380,7 +372,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
                 ) : (
                   <a
                     href="tel:+919072611622"
-                    className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-[#091F27] hover:bg-[#091F27] hover:text-[#FAF9F6] text-[9px] font-sans tracking-[0.2em] text-[#091F27] uppercase hover:scale-103 transition-all font-bold"
+                    className="flex items-center gap-2 px-6 py-2.5 rounded-full border border-cream/20 hover:border-glacier-cyan hover:text-[#091F27] text-[9px] font-mono tracking-[0.2em] text-cream uppercase hover:bg-glacier-cyan transition-all font-bold"
                   >
                     <PhoneCall size={10} />
                     Call us
