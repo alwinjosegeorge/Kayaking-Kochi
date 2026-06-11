@@ -117,13 +117,26 @@ export default function BookingSection({
       });
 
       if (!orderRes.ok) {
-        const errData = await orderRes.json();
-        alert(`Failed to create payment order: ${errData.error || 'Server error'}`);
+        let errorMsg = 'Server error';
+        try {
+          const errData = await orderRes.json();
+          errorMsg = errData.error || errData.message || errorMsg;
+        } catch (_) {
+          errorMsg = `HTTP Error ${orderRes.status} (${orderRes.statusText || 'Internal Error'})`;
+        }
+        alert(`Failed to create payment order: ${errorMsg}`);
         setPaying(false);
         return;
       }
 
-      const orderData = await orderRes.json();
+      let orderData;
+      try {
+        orderData = await orderRes.json();
+      } catch (jsonErr) {
+        alert('Failed to parse order response from server.');
+        setPaying(false);
+        return;
+      }
 
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_T0Q2GWmqdWUe0D',
@@ -149,8 +162,14 @@ export default function BookingSection({
             });
 
             if (!verifyRes.ok) {
-              const errData = await verifyRes.json();
-              alert(`Payment verification failed: ${errData.error || 'Signature mismatch'}`);
+              let errorMsg = 'Signature mismatch';
+              try {
+                const errData = await verifyRes.json();
+                errorMsg = errData.error || errData.message || errorMsg;
+              } catch (_) {
+                errorMsg = `HTTP Error ${verifyRes.status} (${verifyRes.statusText || 'Internal Error'})`;
+              }
+              alert(`Payment verification failed: ${errorMsg}`);
               setPaying(false);
               return;
             }
