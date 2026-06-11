@@ -12,6 +12,7 @@ const MobileBottomNav = lazy(() => import('./components/MobileBottomNav'));
 const PopularTours   = lazy(() => import('./components/PopularTours'));
 const Intro          = lazy(() => import('./components/Intro'));
 const VideoSection   = lazy(() => import('./components/VideoSection'));
+const FishingSection = lazy(() => import('./components/FishingSection'));
 const BookingSection = lazy(() => import('./components/BookingSection'));
 const GallerySection = lazy(() => import('./components/GallerySection'));
 const PaddleTogether = lazy(() => import('./components/PaddleTogether'));
@@ -709,6 +710,7 @@ function App() {
               />
             </Suspense>
             <Suspense fallback={null}><GallerySection /></Suspense>
+            <Suspense fallback={null}><FishingSection /></Suspense>
             <Suspense fallback={null}><PaddleTogether /></Suspense>
             <Suspense fallback={null}><Reviews /></Suspense>
           </main>

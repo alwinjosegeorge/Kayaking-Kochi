@@ -31,6 +31,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
   const navLinks = [
     { name: 'Home', href: '#' },
     { name: 'Tours', href: '#popular-tours' },
+    { name: 'Fishing', href: '#fishing-section' },
     { name: 'About', href: '#expeditions' },
     { name: 'Gallery', href: '#gallery' },
     { name: 'Reviews', href: '#reviews' },
@@ -101,6 +102,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
         if (entry.isIntersecting) {
           const id = entry.target.id;
           if (id === 'popular-tours') setActiveSection('Tours');
+          else if (id === 'fishing-section') setActiveSection('Fishing');
           else if (id === 'expeditions') setActiveSection('About');
           else if (id === 'gallery') setActiveSection('Gallery');
           else if (id === 'reviews') setActiveSection('Reviews');
@@ -111,7 +113,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
 
     const observer = new IntersectionObserver(handleIntersection, observerOptions);
 
-    const sections = ['popular-tours', 'expeditions', 'gallery', 'reviews', 'booking-section'];
+    const sections = ['popular-tours', 'fishing-section', 'expeditions', 'gallery', 'reviews', 'booking-section'];
     sections.forEach(id => {
       const el = document.getElementById(id);
       if (el) observer.observe(el);
