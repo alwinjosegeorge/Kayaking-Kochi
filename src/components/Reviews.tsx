@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, Star, Info, ExternalLink, X, MapPin } from '
 interface GoogleReview {
   id: string;
   name: string;
+  avatarUrl?: string;
   avatarColor?: string;
   avatarText?: string;
   rating: number;
