@@ -34,6 +34,7 @@ export default function Navbar({ currentPath = '/' }: NavbarProps) {
     { name: 'About', href: '#expeditions' },
     { name: 'Gallery', href: '#gallery' },
     { name: 'Reviews', href: '#reviews' },
+    { name: 'FAQ', href: '#faq-section' },
     { name: 'Book', href: '#booking-section' }
   ];
 
