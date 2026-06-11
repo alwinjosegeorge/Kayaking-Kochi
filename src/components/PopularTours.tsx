@@ -28,7 +28,7 @@ const popularTours = [
     price: "₹450",
     subPrice: "per person",
     badge: "Urban Explorer",
-    image: "/kadamakkudy_tour.webp",
+    image: "/city_ride_cover.webp",
     desc: "Explore the vibrant waterways surrounding Kochi and discover the unique blend of urban life and natural beauty. A refreshing perspective of the city from the water."
   },
   {
