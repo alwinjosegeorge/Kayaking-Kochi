@@ -61,6 +61,13 @@ export default function BoardingPass() {
   useEffect(() => {
     if (!isValid) return;
 
+    // Trigger Google Ads conversion event
+    if (typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'conversion', {
+        'send_to': 'AW-16910032872/EPV3CLnErr0cEOi_qv8-'
+      });
+    }
+
     // Generate QR code locally offline using the qrcode library
     const qrPayload = JSON.stringify({
       bookingId: id,

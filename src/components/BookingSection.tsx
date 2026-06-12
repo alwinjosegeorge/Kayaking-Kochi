@@ -239,6 +239,13 @@ export default function BookingSection({
 
   useEffect(() => {
     if (createdBooking) {
+      // Trigger Google Ads conversion event
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-16910032872/EPV3CLnErr0cEOi_qv8-'
+        });
+      }
+
       const qrPayload = JSON.stringify({
         bookingId: createdBooking.id,
         token: createdBooking.securityToken,
