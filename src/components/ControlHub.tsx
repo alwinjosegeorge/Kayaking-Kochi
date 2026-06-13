@@ -745,7 +745,16 @@ export default function ControlHub({
       cleaned = '91' + cleaned;
     }
     
-    window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(message)}`, '_blank');
+    const ua = navigator.userAgent.toLowerCase();
+    const isAndroid = ua.indexOf('android') > -1;
+    
+    if (isAndroid) {
+      // Force open in WhatsApp Business specifically on Android devices
+      window.location.href = `intent://send?phone=${cleaned}&text=${encodeURIComponent(message)}#Intent;scheme=whatsapp;package=com.whatsapp.w4b;end`;
+    } else {
+      // Standard universal link for iOS, PC, and Mac
+      window.open(`https://wa.me/${cleaned}?text=${encodeURIComponent(message)}`, '_blank');
+    }
   };
 
   // Helper for route name formatting
